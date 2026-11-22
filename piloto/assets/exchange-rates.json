@@ -1,0 +1,28 @@
+{
+  "npr": {
+    "date": "2026-11-22",
+    "rates": {
+      "EUR": {
+        "unit": 1,
+        "sell": 163.07
+      },
+      "USD": {
+        "unit": 1,
+        "sell": 148.58
+      },
+      "GBP": {
+        "unit": 1,
+        "sell": 194.75
+      },
+      "INR": {
+        "unit": 100,
+        "sell": 160.15
+      }
+    }
+  },
+  "cop": {
+    "copPerUsd": 3461.92,
+    "validFrom": "2026-11-21",
+    "validThrough": "2026-11-23"
+  }
+}

@@ -1,0 +1,36 @@
+name: Actualizar tasas del Atlas
+on:
+  schedule:
+    - cron: "37 13 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/atlas-tasas.yml"
+      - ".github/scripts/update_atlas_rates.py"
+permissions:
+  contents: write
+concurrency:
+  group: atlas-pilot-rates
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Consultar tasas oficiales
+        run: python3 -B .github/scripts/update_atlas_rates.py
+      - name: Guardar la última tasa válida
+        shell: bash
+        run: |
+          rate_path=piloto/assets/exchange-rates.json
+          if git diff --quiet -- "$rate_path"; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$rate_path"
+          git commit -m 'Actualizar tasas del Atlas'
+          git push origin HEAD:main

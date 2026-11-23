@@ -84,28 +84,28 @@ async function enter(page, url, title) {
 
 async function checkCatalogue(page) {
   await enter(page, base + "?lang=es", "Catálogo de billetes");
-  const filter = page.getByRole("combobox", { name: "País", exact: true });
-  assert.equal(await page.locator(".preview-entry:visible").count(), 7);
-  assert.equal(await page.locator("#catalogue-count").textContent(), "7 billetes");
-  await filter.selectOption("THA");
+  const filter = page.getByRole("combobox", { name: "País o región", exact: true });
+  assert.equal(await page.locator(".preview-entry:visible").count(), 77);
+  assert.equal(await page.locator("#catalogue-count").textContent(), "77 billetes");
+  await filter.selectOption("MLT");
   assert.equal(await page.locator(".preview-entry:visible").count(), 1);
   assert.equal(await page.locator("#catalogue-count").textContent(), "1 billete");
-  assert.equal(new URL(page.url()).searchParams.get("pais"), "THA");
-  await page.getByRole("link", { name: /100 baht tailandeses/ }).click();
-  await heading(page, "100 baht tailandeses");
-  assert.equal(new URL(page.url()).searchParams.get("pais"), "THA");
+  assert.equal(new URL(page.url()).searchParams.get("pais"), "MLT");
+  await page.getByRole("link", { name: /2 liras maltesas/ }).click();
+  await heading(page, "2 liras maltesas");
+  assert.equal(new URL(page.url()).searchParams.get("pais"), "MLT");
   await page.getByRole("button", { name: "English", exact: true }).click();
-  await heading(page, "100 Thai baht");
+  await heading(page, "2 Maltese liri");
   await page.getByRole("link", { name: "Back to catalogue", exact: true }).click();
   await heading(page, "Banknote catalogue");
-  const english = page.getByRole("combobox", { name: "Country", exact: true });
-  assert.equal(await english.inputValue(), "THA");
-  const namedFilter = english.locator("option[value=THA]");
-  assert.equal(await namedFilter.textContent(), "Thailand");
+  const english = page.getByRole("combobox", { name: "Country or region", exact: true });
+  assert.equal(await english.inputValue(), "MLT");
+  const namedFilter = english.locator("option[value=MLT]");
+  assert.equal(await namedFilter.textContent(), "Malta");
   assert.equal(await page.locator(".preview-entry:visible").count(), 1);
   assert.equal(await page.locator("#catalogue-count").textContent(), "1 banknote");
   await english.selectOption("");
-  assert.equal(await page.locator(".preview-entry:visible").count(), 7);
+  assert.equal(await page.locator(".preview-entry:visible").count(), 77);
   assert.equal(new URL(page.url()).searchParams.has("pais"), false);
 }
 
@@ -146,6 +146,98 @@ async function checkNewNotes(page, rates) {
   }
 }
 
+async function checkEntireCollection(context, rates) {
+  const home = await context.newPage();
+  try {
+    await enter(home, base + "?lang=es", "Catálogo de billetes");
+    const links = await home.locator(".preview-entry").evaluateAll(cards => cards.map(card => card.href));
+    assert.equal(links.length, 77);
+    assert.equal(new Set(links).size, 77);
+    assert.equal(await home.locator("#country-filter option").count(), 51);
+    assert.equal(await home.locator("#catalogue-count").textContent(), "77 billetes");
+
+    // Check the filter can return a group of distinct issues from a single country.
+    await home.locator("#country-filter").selectOption("ARG");
+    assert.equal(await home.locator(".preview-entry:visible").count(), 5);
+    assert.equal(await home.locator("#catalogue-count").textContent(), "5 billetes");
+    await home.locator("#country-filter").selectOption("GBR");
+    assert.equal(await home.locator(".preview-entry:visible").count(), 3);
+
+    const pages = await Promise.all(Array.from({ length: 6 }, () => context.newPage()));
+    try {
+      for (let i = 0; i < links.length; i += pages.length) {
+        await Promise.all(links.slice(i, i + pages.length).map(async (link, worker) => {
+          const page = pages[worker];
+          const address = new URL(link);
+          address.searchParams.set("lang", "es");
+          const id = address.pathname.match(/bil-[0-9]{3}/)[0].toUpperCase();
+          let javascriptError = null;
+          const listen = error => { javascriptError = error; };
+          page.on("pageerror", listen);
+          try {
+            const response = await page.goto(address.href, { waitUntil: "load" });
+            assert.equal(response.status(), 200, id);
+            const profile = await page.evaluate(() => window.atlasNotes[document.body.dataset.noteId]);
+            assert.equal(profile.id, id);
+            await heading(page, profile.copy.es.noteTitle);
+            assert.equal(await page.locator(".serial").textContent(), profile.serial, id);
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), id + " horizontal overflow");
+            const photos = await page.locator(".gallery img").evaluateAll(async images => {
+              return Promise.all(images.map(async image => {
+                await image.decode();
+                return {width: image.naturalWidth, height: image.naturalHeight, clip: getComputedStyle(image).clipPath};
+              }));
+            });
+            assert.equal(photos.length, 2, id);
+            for (const [k, original] of Object.values(profile.images.original).entries()) {
+              assert.equal(photos[k].width, original.width, id);
+              assert.equal(photos[k].height, original.height, id);
+              if (original.outline) assert.match(photos[k].clip, /^polygon/, id);
+            }
+            await page.locator("#find-country").click();
+            await page.locator("#country-map[open]").waitFor();
+            const mapReady = await page.locator("canvas").evaluate(canvas => {
+              const image = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
+              for (let p = 0; p < image.length; p += 4)
+                if (image[p] === 39 && image[p + 1] === 116 && image[p + 2] === 82) return true;
+              return false;
+            });
+            assert.ok(mapReady, id + " map highlight");
+            await page.getByRole("button", {name:"Cerrar mapa",exact:true}).click();
+            if (profile.conversion === "historical") {
+              assert.equal(await page.locator("#currency").count(), 0, id);
+              assert.ok(await page.locator(".historical-panel p").textContent(), id);
+            } else {
+              assert.equal(await page.locator("#currency").inputValue(), "COP", id);
+              const origin = profile.currency;
+              const quoted = rates.npr.rates[origin];
+              const inUsd = profile.conversion === "usd" ? profile.amount / rates.usd[origin].perUsd
+                : origin === "USD" ? profile.amount
+                : (profile.amount * (quoted ? quoted.sell / quoted.unit : 1)) / rates.npr.rates.USD.sell;
+              const expected = new Intl.NumberFormat("es-CO", {maximumFractionDigits:0,useGrouping:true}).format(inUsd * rates.cop.copPerUsd);
+              await page.waitForFunction(output => document.querySelector("#converted")?.textContent === output,
+                "≈ " + expected + " COP", { timeout: 12_000 });
+            }
+            await page.getByRole("button", {name:"English",exact:true}).click();
+            await heading(page, profile.copy.en.noteTitle);
+            assert.equal(javascriptError, null, id);
+          } catch (error) {
+            error.message = id + " " + error.message;
+            throw error;
+          } finally {
+            page.off("pageerror", listen);
+          }
+        }));
+      }
+    } finally {
+      await Promise.all(pages.map(page => page.close()));
+    }
+    console.log("All 77 published URLs, 154 original images, 50 filters, title translations, maps and currency sections verified.");
+  } finally {
+    await home.close();
+  }
+}
+
 async function checkBrowser(engine, device, urls, rates) {
   const browser = await engine.launch();
   try {
@@ -179,7 +271,7 @@ async function checkBrowser(engine, device, urls, rates) {
     await heading(page, "100 Nepalese rupees");
     await page.getByRole("link", { name: "Back to catalogue", exact: true }).click();
     await heading(page, "Banknote catalogue");
-    assert.equal(await page.locator(".preview-entry").count(), 7);
+    assert.equal(await page.locator(".preview-entry").count(), 77);
     await page.getByRole("link", { name: /2 Maltese liri/ }).click();
     await heading(page, "2 Maltese liri");
     await page.getByRole("button", { name: "Español", exact: true }).click();
@@ -196,7 +288,8 @@ async function checkBrowser(engine, device, urls, rates) {
     await checkCatalogue(page);
     await checkNewNotes(page, rates);
     assert.deepEqual(errors, []);
-    console.log(device + " passed for the country filter, all seven notes and both QR codes.");
+    if (device === "Pixel 7") await checkEntireCollection(context, rates);
+    console.log(device + " passed catalogue navigation, both QR codes and the representative collection cases.");
   } finally {
     await browser.close();
   }

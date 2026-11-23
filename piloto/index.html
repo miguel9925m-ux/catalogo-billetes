@@ -26,23 +26,286 @@
     <h1 data-copy="homeTitle">Catálogo de billetes</h1>
     <div class="catalogue-controls" id="catalogue-controls" hidden>
       <div class="catalogue-filter">
-        <label for="country-filter" data-copy="countryFilter">País</label>
+        <label for="country-filter" data-copy="countryFilter">País o región</label>
         <div class="select-shell">
           <select id="country-filter">
-            <option value="" data-copy="allCountries">Todos los países</option>
-            <option value="USA" data-country-note="BIL-044">Estados Unidos</option>
-            <option value="IND" data-country-note="BIL-048">India</option>
+            <option value="" data-copy="allCountries">Todos</option>
+            <option value="ALB" data-country-note="BIL-054">Albania</option>
+            <option value="DZA" data-country-note="BIL-019">Argelia</option>
+            <option value="ARG" data-country-note="BIL-009">Argentina</option>
+            <option value="BGD" data-country-note="BIL-038">Bangladés</option>
+            <option value="BLR" data-country-note="BIL-055">Bielorrusia</option>
+            <option value="BIH" data-country-note="BIL-070">Bosnia y Herzegovina</option>
+            <option value="BRA" data-country-note="BIL-014">Brasil</option>
+            <option value="BGR" data-country-note="BIL-059">Bulgaria</option>
+            <option value="CAN" data-country-note="BIL-018">Canadá</option>
+            <option value="XCD" data-country-note="BIL-035">Caribe Oriental</option>
+            <option value="CZE" data-country-note="BIL-029">Chequia</option>
+            <option value="CHL" data-country-note="BIL-016">Chile</option>
+            <option value="CHN" data-country-note="BIL-026">China</option>
+            <option value="HRV" data-country-note="BIL-072">Croacia</option>
+            <option value="DNK" data-country-note="BIL-004">Dinamarca</option>
+            <option value="EGY" data-country-note="BIL-058">Egipto</option>
+            <option value="ARE" data-country-note="BIL-047">Emiratos Árabes Unidos</option>
+            <option value="USA" data-country-note="BIL-043">Estados Unidos</option>
+            <option value="PHL" data-country-note="BIL-005">Filipinas</option>
+            <option value="HUN" data-country-note="BIL-020">Hungría</option>
+            <option value="IND" data-country-note="BIL-036">India</option>
+            <option value="ISL" data-country-note="BIL-021">Islandia</option>
             <option value="ITA" data-country-note="BIL-046">Italia</option>
+            <option value="JAM" data-country-note="BIL-071">Jamaica</option>
+            <option value="JPN" data-country-note="BIL-065">Japón</option>
+            <option value="LBY" data-country-note="BIL-003">Libia</option>
+            <option value="LBN" data-country-note="BIL-050">Líbano</option>
             <option value="MYS" data-country-note="BIL-052">Malasia</option>
             <option value="MLT" data-country-note="BIL-073">Malta</option>
-            <option value="NPL" data-country-note="BIL-049">Nepal</option>
+            <option value="MDA" data-country-note="BIL-062">Moldova</option>
+            <option value="MEX" data-country-note="BIL-001">México</option>
+            <option value="NPL" data-country-note="BIL-027">Nepal</option>
+            <option value="NGA" data-country-note="BIL-041">Nigeria</option>
+            <option value="PAK" data-country-note="BIL-067">Pakistán</option>
+            <option value="PER" data-country-note="BIL-006">Perú</option>
+            <option value="POL" data-country-note="BIL-042">Polonia</option>
+            <option value="GBR" data-country-note="BIL-057">Reino Unido</option>
+            <option value="ROU" data-country-note="BIL-024">Rumanía</option>
+            <option value="RUS" data-country-note="BIL-013">Rusia</option>
+            <option value="SRB" data-country-note="BIL-007">Serbia</option>
+            <option value="LKA" data-country-note="BIL-060">Sri Lanka</option>
+            <option value="SWE" data-country-note="BIL-031">Suecia</option>
+            <option value="CHE" data-country-note="BIL-017">Suiza</option>
             <option value="THA" data-country-note="BIL-023">Tailandia</option>
+            <option value="TWN" data-country-note="BIL-064">Taiwán</option>
+            <option value="TUR" data-country-note="BIL-033">Turquía</option>
+            <option value="TUN" data-country-note="BIL-053">Túnez</option>
+            <option value="UKR" data-country-note="BIL-022">Ucrania</option>
+            <option value="SUN" data-country-note="BIL-037">Unión Soviética</option>
+            <option value="URY" data-country-note="BIL-051">Uruguay</option>
           </select>
         </div>
       </div>
       <output id="catalogue-count" for="country-filter" aria-live="polite"></output>
     </div>
     <div class="catalogue-entries">
+      <a class="preview-entry" href="billetes/bil-001/index.html" data-language-link data-catalogue-country="MEX">
+        <span class="photo-window preview-image" data-home-photo="BIL-001">
+          <img src="assets/bil-001-anverso.jpg" width="1050" height="571" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-001 · <span data-country-note="BIL-001">México</span></span>
+          <span class="preview-title" data-title-note="BIL-001">20 pesos mexicanos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-002/index.html" data-language-link data-catalogue-country="MEX">
+        <span class="photo-window preview-image" data-home-photo="BIL-002">
+          <img src="assets/bil-002-anverso.jpg" width="522" height="1050" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-002 · <span data-country-note="BIL-002">México</span></span>
+          <span class="preview-title" data-title-note="BIL-002">100 pesos mexicanos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-003/index.html" data-language-link data-catalogue-country="LBY">
+        <span class="photo-window preview-image" data-home-photo="BIL-003">
+          <img src="assets/bil-003-anverso.jpg" width="1050" height="525" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-003 · <span data-country-note="BIL-003">Libia</span></span>
+          <span class="preview-title" data-title-note="BIL-003">10 dinares libios</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-004/index.html" data-language-link data-catalogue-country="DNK">
+        <span class="photo-window preview-image" data-home-photo="BIL-004">
+          <img src="assets/bil-004-anverso.jpg" width="1050" height="622" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-004 · <span data-country-note="BIL-004">Dinamarca</span></span>
+          <span class="preview-title" data-title-note="BIL-004">50 coronas danesas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-005/index.html" data-language-link data-catalogue-country="PHL">
+        <span class="photo-window preview-image" data-home-photo="BIL-005">
+          <img src="assets/bil-005-anverso.jpg" width="1050" height="440" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-005 · <span data-country-note="BIL-005">Filipinas</span></span>
+          <span class="preview-title" data-title-note="BIL-005">50 pesos filipinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-006/index.html" data-language-link data-catalogue-country="PER">
+        <span class="photo-window preview-image" data-home-photo="BIL-006">
+          <img src="assets/bil-006-anverso.jpg" width="1050" height="484" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-006 · <span data-country-note="BIL-006">Perú</span></span>
+          <span class="preview-title" data-title-note="BIL-006">20 soles peruanos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-007/index.html" data-language-link data-catalogue-country="SRB">
+        <span class="photo-window preview-image" data-home-photo="BIL-007">
+          <img src="assets/bil-007-anverso.jpg" width="1050" height="474" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-007 · <span data-country-note="BIL-007">Serbia</span></span>
+          <span class="preview-title" data-title-note="BIL-007">50 dinares serbios</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-008/index.html" data-language-link data-catalogue-country="SRB">
+        <span class="photo-window preview-image" data-home-photo="BIL-008">
+          <img src="assets/bil-008-anverso.jpg" width="1050" height="485" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-008 · <span data-country-note="BIL-008">Serbia</span></span>
+          <span class="preview-title" data-title-note="BIL-008">20 dinares serbios</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-009/index.html" data-language-link data-catalogue-country="ARG">
+        <span class="photo-window preview-image" data-home-photo="BIL-009">
+          <img src="assets/bil-009-anverso.jpg" width="429" height="1050" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-009 · <span data-country-note="BIL-009">Argentina</span></span>
+          <span class="preview-title" data-title-note="BIL-009">500 pesos argentinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-010/index.html" data-language-link data-catalogue-country="ARG">
+        <span class="photo-window preview-image" data-home-photo="BIL-010">
+          <img src="assets/bil-010-anverso.jpg" width="1050" height="449" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-010 · <span data-country-note="BIL-010">Argentina</span></span>
+          <span class="preview-title" data-title-note="BIL-010">2.000 pesos argentinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-011/index.html" data-language-link data-catalogue-country="ARG">
+        <span class="photo-window preview-image" data-home-photo="BIL-011">
+          <img src="assets/bil-011-anverso.jpg" width="1050" height="423" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-011 · <span data-country-note="BIL-011">Argentina</span></span>
+          <span class="preview-title" data-title-note="BIL-011">10.000 pesos argentinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-012/index.html" data-language-link data-catalogue-country="ARG">
+        <span class="photo-window preview-image" data-home-photo="BIL-012">
+          <img src="assets/bil-012-anverso.jpg" width="428" height="1050" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-012 · <span data-country-note="BIL-012">Argentina</span></span>
+          <span class="preview-title" data-title-note="BIL-012">200 pesos argentinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-013/index.html" data-language-link data-catalogue-country="RUS">
+        <span class="photo-window preview-image" data-home-photo="BIL-013">
+          <img src="assets/bil-013-anverso.jpg" width="1050" height="481" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-013 · <span data-country-note="BIL-013">Rusia</span></span>
+          <span class="preview-title" data-title-note="BIL-013">100 rublos rusos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-014/index.html" data-language-link data-catalogue-country="BRA">
+        <span class="photo-window preview-image" data-home-photo="BIL-014">
+          <img src="assets/bil-014-anverso.jpg" width="1050" height="491" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-014 · <span data-country-note="BIL-014">Brasil</span></span>
+          <span class="preview-title" data-title-note="BIL-014">10 reales brasileños</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-015/index.html" data-language-link data-catalogue-country="BRA">
+        <span class="photo-window preview-image" data-home-photo="BIL-015">
+          <img src="assets/bil-015-anverso.jpg" width="1050" height="637" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-015 · <span data-country-note="BIL-015">Brasil</span></span>
+          <span class="preview-title" data-title-note="BIL-015">2 reales brasileños</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-016/index.html" data-language-link data-catalogue-country="CHL">
+        <span class="photo-window preview-image" data-home-photo="BIL-016">
+          <img src="assets/bil-016-anverso.jpg" width="1050" height="630" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-016 · <span data-country-note="BIL-016">Chile</span></span>
+          <span class="preview-title" data-title-note="BIL-016">1.000 pesos chilenos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-017/index.html" data-language-link data-catalogue-country="CHE">
+        <span class="photo-window preview-image" data-home-photo="BIL-017">
+          <img src="assets/bil-017-anverso.jpg" width="615" height="1050" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-017 · <span data-country-note="BIL-017">Suiza</span></span>
+          <span class="preview-title" data-title-note="BIL-017">10 francos suizos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-018/index.html" data-language-link data-catalogue-country="CAN">
+        <span class="photo-window preview-image" data-home-photo="BIL-018">
+          <img src="assets/bil-018-anverso.jpg" width="475" height="1050" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-018 · <span data-country-note="BIL-018">Canadá</span></span>
+          <span class="preview-title" data-title-note="BIL-018">10 dólares canadienses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-019/index.html" data-language-link data-catalogue-country="DZA">
+        <span class="photo-window preview-image" data-home-photo="BIL-019">
+          <img src="assets/bil-019-anverso.jpg" width="1050" height="455" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-019 · <span data-country-note="BIL-019">Argelia</span></span>
+          <span class="preview-title" data-title-note="BIL-019">1.000 dinares argelinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-020/index.html" data-language-link data-catalogue-country="HUN">
+        <span class="photo-window preview-image" data-home-photo="BIL-020">
+          <img src="assets/bil-020-anverso.jpg" width="1050" height="473" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-020 · <span data-country-note="BIL-020">Hungría</span></span>
+          <span class="preview-title" data-title-note="BIL-020">1.000 forintos húngaros</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-021/index.html" data-language-link data-catalogue-country="ISL">
+        <span class="photo-window preview-image" data-home-photo="BIL-021">
+          <img src="assets/bil-021-anverso.jpg" width="1050" height="494" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-021 · <span data-country-note="BIL-021">Islandia</span></span>
+          <span class="preview-title" data-title-note="BIL-021">1.000 coronas islandesas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-022/index.html" data-language-link data-catalogue-country="UKR">
+        <span class="photo-window preview-image" data-home-photo="BIL-022">
+          <img src="assets/bil-022-anverso.jpg" width="1050" height="534" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-022 · <span data-country-note="BIL-022">Ucrania</span></span>
+          <span class="preview-title" data-title-note="BIL-022">200 grivnas ucranianas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
       <a class="preview-entry" href="billetes/bil-023/index.html" data-language-link data-catalogue-country="THA">
         <span class="photo-window preview-image" data-home-photo="BIL-023">
           <img src="assets/bil-023-anverso.jpg" width="1050" height="491" loading="lazy" decoding="async" alt="">
@@ -50,6 +313,206 @@
         <span class="preview-entry-text">
           <span class="note-id">BIL-023 · <span data-country-note="BIL-023">Tailandia</span></span>
           <span class="preview-title" data-title-note="BIL-023">100 baht tailandeses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-024/index.html" data-language-link data-catalogue-country="ROU">
+        <span class="photo-window preview-image" data-home-photo="BIL-024">
+          <img src="assets/bil-024-anverso.jpg" width="1050" height="572" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-024 · <span data-country-note="BIL-024">Rumanía</span></span>
+          <span class="preview-title" data-title-note="BIL-024">10 lei rumanos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-025/index.html" data-language-link data-catalogue-country="ARG">
+        <span class="photo-window preview-image" data-home-photo="BIL-025">
+          <img src="assets/bil-025-anverso.jpg" width="1050" height="441" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-025 · <span data-country-note="BIL-025">Argentina</span></span>
+          <span class="preview-title" data-title-note="BIL-025">1.000 pesos argentinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-026/index.html" data-language-link data-catalogue-country="CHN">
+        <span class="photo-window preview-image" data-home-photo="BIL-026">
+          <img src="assets/bil-026-anverso.jpg" width="1050" height="498" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-026 · <span data-country-note="BIL-026">China</span></span>
+          <span class="preview-title" data-title-note="BIL-026">5 yuanes chinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-027/index.html" data-language-link data-catalogue-country="NPL">
+        <span class="photo-window preview-image" data-home-photo="BIL-027">
+          <img src="assets/bil-027-anverso.jpg" width="1050" height="624" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-027 · <span data-country-note="BIL-027">Nepal</span></span>
+          <span class="preview-title" data-title-note="BIL-027">5 rupias nepalíes</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-028/index.html" data-language-link data-catalogue-country="NPL">
+        <span class="photo-window preview-image" data-home-photo="BIL-028">
+          <img src="assets/bil-028-anverso.jpg" width="1050" height="546" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-028 · <span data-country-note="BIL-028">Nepal</span></span>
+          <span class="preview-title" data-title-note="BIL-028">50 rupias nepalíes</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-029/index.html" data-language-link data-catalogue-country="CZE">
+        <span class="photo-window preview-image" data-home-photo="BIL-029">
+          <img src="assets/bil-029-anverso.jpg" width="1050" height="513" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-029 · <span data-country-note="BIL-029">Chequia</span></span>
+          <span class="preview-title" data-title-note="BIL-029">100 coronas checas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-030/index.html" data-language-link data-catalogue-country="CZE">
+        <span class="photo-window preview-image" data-home-photo="BIL-030">
+          <img src="assets/bil-030-anverso.jpg" width="1050" height="497" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-030 · <span data-country-note="BIL-030">Chequia</span></span>
+          <span class="preview-title" data-title-note="BIL-030">50 coronas checas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-031/index.html" data-language-link data-catalogue-country="SWE">
+        <span class="photo-window preview-image" data-home-photo="BIL-031">
+          <img src="assets/bil-031-anverso.jpg" width="1050" height="555" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-031 · <span data-country-note="BIL-031">Suecia</span></span>
+          <span class="preview-title" data-title-note="BIL-031">50 coronas suecas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-032/index.html" data-language-link data-catalogue-country="SRB">
+        <span class="photo-window preview-image" data-home-photo="BIL-032">
+          <img src="assets/bil-032-anverso.jpg" width="1050" height="502" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-032 · <span data-country-note="BIL-032">Serbia</span></span>
+          <span class="preview-title" data-title-note="BIL-032">1.000 dinares serbios</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-033/index.html" data-language-link data-catalogue-country="TUR">
+        <span class="photo-window preview-image" data-home-photo="BIL-033">
+          <img src="assets/bil-033-anverso.jpg" width="1050" height="530" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-033 · <span data-country-note="BIL-033">Turquía</span></span>
+          <span class="preview-title" data-title-note="BIL-033">5 liras turcas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-034/index.html" data-language-link data-catalogue-country="TUR">
+        <span class="photo-window preview-image" data-home-photo="BIL-034">
+          <img src="assets/bil-034-anverso.jpg" width="1050" height="476" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-034 · <span data-country-note="BIL-034">Turquía</span></span>
+          <span class="preview-title" data-title-note="BIL-034">200 liras turcas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-035/index.html" data-language-link data-catalogue-country="XCD">
+        <span class="photo-window preview-image" data-home-photo="BIL-035">
+          <img src="assets/bil-035-anverso.jpg" width="528" height="1050" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-035 · <span data-country-note="BIL-035">Caribe Oriental</span></span>
+          <span class="preview-title" data-title-note="BIL-035">5 dólares del Caribe Oriental</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-036/index.html" data-language-link data-catalogue-country="IND">
+        <span class="photo-window preview-image" data-home-photo="BIL-036">
+          <img src="assets/bil-036-anverso.jpg" width="1050" height="530" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-036 · <span data-country-note="BIL-036">India</span></span>
+          <span class="preview-title" data-title-note="BIL-036">10 rupias indias</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-037/index.html" data-language-link data-catalogue-country="SUN">
+        <span class="photo-window preview-image" data-home-photo="BIL-037">
+          <img src="assets/bil-037-anverso.jpg" width="1050" height="551" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-037 · <span data-country-note="BIL-037">Unión Soviética</span></span>
+          <span class="preview-title" data-title-note="BIL-037">1 rublo soviético</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-038/index.html" data-language-link data-catalogue-country="BGD">
+        <span class="photo-window preview-image" data-home-photo="BIL-038">
+          <img src="assets/bil-038-anverso.jpg" width="1050" height="506" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-038 · <span data-country-note="BIL-038">Bangladés</span></span>
+          <span class="preview-title" data-title-note="BIL-038">10 takas de Bangladés</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-039/index.html" data-language-link data-catalogue-country="ROU">
+        <span class="photo-window preview-image" data-home-photo="BIL-039">
+          <img src="assets/bil-039-anverso.jpg" width="1050" height="550" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-039 · <span data-country-note="BIL-039">Rumanía</span></span>
+          <span class="preview-title" data-title-note="BIL-039">5 lei rumanos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-040/index.html" data-language-link data-catalogue-country="SRB">
+        <span class="photo-window preview-image" data-home-photo="BIL-040">
+          <img src="assets/bil-040-anverso.jpg" width="1050" height="497" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-040 · <span data-country-note="BIL-040">Serbia</span></span>
+          <span class="preview-title" data-title-note="BIL-040">10 dinares serbios</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-041/index.html" data-language-link data-catalogue-country="NGA">
+        <span class="photo-window preview-image" data-home-photo="BIL-041">
+          <img src="assets/bil-041-anverso.jpg" width="1050" height="628" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-041 · <span data-country-note="BIL-041">Nigeria</span></span>
+          <span class="preview-title" data-title-note="BIL-041">5 nairas nigerianas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-042/index.html" data-language-link data-catalogue-country="POL">
+        <span class="photo-window preview-image" data-home-photo="BIL-042">
+          <img src="assets/bil-042-anverso.jpg" width="1050" height="519" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-042 · <span data-country-note="BIL-042">Polonia</span></span>
+          <span class="preview-title" data-title-note="BIL-042">20 zlotis polacos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-043/index.html" data-language-link data-catalogue-country="USA">
+        <span class="photo-window preview-image" data-home-photo="BIL-043">
+          <img src="assets/bil-043-anverso.jpg" width="1050" height="438" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-043 · <span data-country-note="BIL-043">Estados Unidos</span></span>
+          <span class="preview-title" data-title-note="BIL-043">1 dólar estadounidense</span>
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
       </a>
@@ -63,6 +526,16 @@
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
       </a>
+      <a class="preview-entry" href="billetes/bil-045/index.html" data-language-link data-catalogue-country="THA">
+        <span class="photo-window preview-image" data-home-photo="BIL-045">
+          <img src="assets/bil-045-anverso.jpg" width="1050" height="486" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-045 · <span data-country-note="BIL-045">Tailandia</span></span>
+          <span class="preview-title" data-title-note="BIL-045">100 baht tailandeses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
       <a class="preview-entry" href="billetes/bil-046/index.html" data-language-link data-catalogue-country="ITA">
         <span class="photo-window preview-image" data-home-photo="BIL-046">
           <img src="assets/bil-046-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
@@ -70,6 +543,16 @@
         <span class="preview-entry-text">
           <span class="note-id">BIL-046 · <span data-country-note="BIL-046">Italia</span></span>
           <span class="preview-title" data-title-note="BIL-046">1.000 liras italianas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-047/index.html" data-language-link data-catalogue-country="ARE">
+        <span class="photo-window preview-image" data-home-photo="BIL-047">
+          <img src="assets/bil-047-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-047 · <span data-country-note="BIL-047">Emiratos Árabes Unidos</span></span>
+          <span class="preview-title" data-title-note="BIL-047">5 dírhams de los Emiratos Árabes Unidos</span>
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
       </a>
@@ -93,6 +576,26 @@
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
       </a>
+      <a class="preview-entry" href="billetes/bil-050/index.html" data-language-link data-catalogue-country="LBN">
+        <span class="photo-window preview-image" data-home-photo="BIL-050">
+          <img src="assets/bil-050-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-050 · <span data-country-note="BIL-050">Líbano</span></span>
+          <span class="preview-title" data-title-note="BIL-050">100.000 libras libanesas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-051/index.html" data-language-link data-catalogue-country="URY">
+        <span class="photo-window preview-image" data-home-photo="BIL-051">
+          <img src="assets/bil-051-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-051 · <span data-country-note="BIL-051">Uruguay</span></span>
+          <span class="preview-title" data-title-note="BIL-051">20 pesos uruguayos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
       <a class="preview-entry" href="billetes/bil-052/index.html" data-language-link data-catalogue-country="MYS">
         <span class="photo-window preview-image" data-home-photo="BIL-052">
           <img src="assets/bil-052-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
@@ -103,6 +606,206 @@
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
       </a>
+      <a class="preview-entry" href="billetes/bil-053/index.html" data-language-link data-catalogue-country="TUN">
+        <span class="photo-window preview-image" data-home-photo="BIL-053">
+          <img src="assets/bil-053-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-053 · <span data-country-note="BIL-053">Túnez</span></span>
+          <span class="preview-title" data-title-note="BIL-053">10 dinares tunecinos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-054/index.html" data-language-link data-catalogue-country="ALB">
+        <span class="photo-window preview-image" data-home-photo="BIL-054">
+          <img src="assets/bil-054-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-054 · <span data-country-note="BIL-054">Albania</span></span>
+          <span class="preview-title" data-title-note="BIL-054">500 leks albaneses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-055/index.html" data-language-link data-catalogue-country="BLR">
+        <span class="photo-window preview-image" data-home-photo="BIL-055">
+          <img src="assets/bil-055-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-055 · <span data-country-note="BIL-055">Bielorrusia</span></span>
+          <span class="preview-title" data-title-note="BIL-055">5 rublos bielorrusos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-056/index.html" data-language-link data-catalogue-country="UKR">
+        <span class="photo-window preview-image" data-home-photo="BIL-056">
+          <img src="assets/bil-056-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-056 · <span data-country-note="BIL-056">Ucrania</span></span>
+          <span class="preview-title" data-title-note="BIL-056">100 grivnas ucranianas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-057/index.html" data-language-link data-catalogue-country="GBR">
+        <span class="photo-window preview-image" data-home-photo="BIL-057">
+          <img src="assets/bil-057-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-057 · <span data-country-note="BIL-057">Reino Unido</span></span>
+          <span class="preview-title" data-title-note="BIL-057">10 libras esterlinas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-058/index.html" data-language-link data-catalogue-country="EGY">
+        <span class="photo-window preview-image" data-home-photo="BIL-058">
+          <img src="assets/bil-058-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-058 · <span data-country-note="BIL-058">Egipto</span></span>
+          <span class="preview-title" data-title-note="BIL-058">100 libras egipcias</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-059/index.html" data-language-link data-catalogue-country="BGR">
+        <span class="photo-window preview-image" data-home-photo="BIL-059">
+          <img src="assets/bil-059-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-059 · <span data-country-note="BIL-059">Bulgaria</span></span>
+          <span class="preview-title" data-title-note="BIL-059">10 levas búlgaras</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-060/index.html" data-language-link data-catalogue-country="LKA">
+        <span class="photo-window preview-image" data-home-photo="BIL-060">
+          <img src="assets/bil-060-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-060 · <span data-country-note="BIL-060">Sri Lanka</span></span>
+          <span class="preview-title" data-title-note="BIL-060">20 rupias de Sri Lanka</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-061/index.html" data-language-link data-catalogue-country="NPL">
+        <span class="photo-window preview-image" data-home-photo="BIL-061">
+          <img src="assets/bil-061-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-061 · <span data-country-note="BIL-061">Nepal</span></span>
+          <span class="preview-title" data-title-note="BIL-061">1.000 rupias nepalíes</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-062/index.html" data-language-link data-catalogue-country="MDA">
+        <span class="photo-window preview-image" data-home-photo="BIL-062">
+          <img src="assets/bil-062-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-062 · <span data-country-note="BIL-062">Moldova</span></span>
+          <span class="preview-title" data-title-note="BIL-062">50 lei moldavos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-063/index.html" data-language-link data-catalogue-country="URY">
+        <span class="photo-window preview-image" data-home-photo="BIL-063">
+          <img src="assets/bil-063-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-063 · <span data-country-note="BIL-063">Uruguay</span></span>
+          <span class="preview-title" data-title-note="BIL-063">50 pesos uruguayos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-064/index.html" data-language-link data-catalogue-country="TWN">
+        <span class="photo-window preview-image" data-home-photo="BIL-064">
+          <img src="assets/bil-064-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-064 · <span data-country-note="BIL-064">Taiwán</span></span>
+          <span class="preview-title" data-title-note="BIL-064">100 dólares taiwaneses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-065/index.html" data-language-link data-catalogue-country="JPN">
+        <span class="photo-window preview-image" data-home-photo="BIL-065">
+          <img src="assets/bil-065-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-065 · <span data-country-note="BIL-065">Japón</span></span>
+          <span class="preview-title" data-title-note="BIL-065">1.000 yenes japoneses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-066/index.html" data-language-link data-catalogue-country="UKR">
+        <span class="photo-window preview-image" data-home-photo="BIL-066">
+          <img src="assets/bil-066-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-066 · <span data-country-note="BIL-066">Ucrania</span></span>
+          <span class="preview-title" data-title-note="BIL-066">50 grivnas ucranianas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-067/index.html" data-language-link data-catalogue-country="PAK">
+        <span class="photo-window preview-image" data-home-photo="BIL-067">
+          <img src="assets/bil-067-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-067 · <span data-country-note="BIL-067">Pakistán</span></span>
+          <span class="preview-title" data-title-note="BIL-067">10 rupias pakistaníes</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-068/index.html" data-language-link data-catalogue-country="POL">
+        <span class="photo-window preview-image" data-home-photo="BIL-068">
+          <img src="assets/bil-068-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-068 · <span data-country-note="BIL-068">Polonia</span></span>
+          <span class="preview-title" data-title-note="BIL-068">50 zlotis polacos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-069/index.html" data-language-link data-catalogue-country="ALB">
+        <span class="photo-window preview-image" data-home-photo="BIL-069">
+          <img src="assets/bil-069-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-069 · <span data-country-note="BIL-069">Albania</span></span>
+          <span class="preview-title" data-title-note="BIL-069">200 leks albaneses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-070/index.html" data-language-link data-catalogue-country="BIH">
+        <span class="photo-window preview-image" data-home-photo="BIL-070">
+          <img src="assets/bil-070-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-070 · <span data-country-note="BIL-070">Bosnia y Herzegovina</span></span>
+          <span class="preview-title" data-title-note="BIL-070">10 marcos convertibles</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-071/index.html" data-language-link data-catalogue-country="JAM">
+        <span class="photo-window preview-image" data-home-photo="BIL-071">
+          <img src="assets/bil-071-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-071 · <span data-country-note="BIL-071">Jamaica</span></span>
+          <span class="preview-title" data-title-note="BIL-071">100 dólares jamaicanos</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-072/index.html" data-language-link data-catalogue-country="HRV">
+        <span class="photo-window preview-image" data-home-photo="BIL-072">
+          <img src="assets/bil-072-anverso.jpg" width="1050" height="552" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-072 · <span data-country-note="BIL-072">Croacia</span></span>
+          <span class="preview-title" data-title-note="BIL-072">1 dinar croata</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
       <a class="preview-entry" href="billetes/bil-073/index.html" data-language-link data-catalogue-country="MLT">
         <span class="photo-window preview-image" data-home-photo="BIL-073">
           <img src="assets/malta-anverso.jpg" width="1050" height="506" loading="lazy" decoding="async" alt="">
@@ -110,6 +813,46 @@
         <span class="preview-entry-text">
           <span class="note-id">BIL-073 · <span data-country-note="BIL-073">Malta</span></span>
           <span class="preview-title" data-title-note="BIL-073">2 liras maltesas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-074/index.html" data-language-link data-catalogue-country="ALB">
+        <span class="photo-window preview-image" data-home-photo="BIL-074">
+          <img src="assets/bil-074-anverso.jpg" width="1050" height="505" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-074 · <span data-country-note="BIL-074">Albania</span></span>
+          <span class="preview-title" data-title-note="BIL-074">200 leks albaneses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-075/index.html" data-language-link data-catalogue-country="GBR">
+        <span class="photo-window preview-image" data-home-photo="BIL-075">
+          <img src="assets/bil-075-anverso.jpg" width="1050" height="516" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-075 · <span data-country-note="BIL-075">Reino Unido (Escocia)</span></span>
+          <span class="preview-title" data-title-note="BIL-075">1 libra esterlina</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-076/index.html" data-language-link data-catalogue-country="EGY">
+        <span class="photo-window preview-image" data-home-photo="BIL-076">
+          <img src="assets/bil-076-anverso.jpg" width="1050" height="512" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-076 · <span data-country-note="BIL-076">Egipto</span></span>
+          <span class="preview-title" data-title-note="BIL-076">5 libras egipcias</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-077/index.html" data-language-link data-catalogue-country="GBR">
+        <span class="photo-window preview-image" data-home-photo="BIL-077">
+          <img src="assets/bil-077-anverso.jpg" width="1050" height="523" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-077 · <span data-country-note="BIL-077">Reino Unido (Inglaterra)</span></span>
+          <span class="preview-title" data-title-note="BIL-077">1 libra esterlina</span>
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
       </a>

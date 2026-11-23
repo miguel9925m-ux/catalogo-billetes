@@ -6,12 +6,14 @@
   const note = atlasNotes[document.body.dataset.noteId];
   const portable = document.body.hasAttribute("data-portable");
   const preference = "atlas-de-billetes-language";
-  const rateStorage = "atlas-de-billetes-npr-rates-v1";
+  const rateStorage = "atlas-de-billetes-rates-v2";
   const languageButtons = document.querySelectorAll("[data-language]");
   const languageLinks = document.querySelectorAll("[data-language-link]");
   const countryFilter = byId("country-filter");
   const catalogueCards = document.querySelectorAll("[data-catalogue-country]");
   const currency = byId("currency");
+  const referenceCurrencies = note?.conversion === "usd"
+    ? [...new Set([note.currency, "EUR", "GBP", "INR"])] : [];
   const map = byId("country-map");
   const canvas = byId("region-map");
   const viewer = byId("photo-viewer");
@@ -102,7 +104,9 @@
       title.textContent = atlasNotes[title.dataset.titleNote].copy[language].noteTitle;
     }
     for (const element of document.querySelectorAll("[data-country-note]")) {
-      element.textContent = atlasNotes[element.dataset.countryNote].copy[language].countryName;
+      const copy = atlasNotes[element.dataset.countryNote].copy[language];
+      element.textContent = element.tagName === "OPTION"
+        ? (copy.filterCountry ?? copy.countryName) : copy.countryName;
     }
     if (countryFilter) {
       const options = [...countryFilter.querySelectorAll("[data-country-note]")];
@@ -175,18 +179,26 @@
     const isDate = value => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) &&
       Number.isFinite(Date.parse(value));
     const positive = value => Number.isFinite(value) && value > 0;
-    const npr = snapshot?.npr;
     const cop = snapshot?.cop;
+    if (!isDate(cop?.validFrom) || !isDate(cop?.validThrough) ||
+        cop.validFrom > cop.validThrough || !positive(cop.copPerUsd)) return false;
+    if (note.conversion === "usd") {
+      return referenceCurrencies.every(code =>
+        isDate(snapshot.usd?.[code]?.date) && positive(snapshot.usd[code].perUsd));
+    }
     const required = new Set(["EUR", "USD", "GBP", "INR"]);
     if (note.currency !== "NPR") required.add(note.currency);
-    return isDate(npr?.date) && isDate(cop?.validFrom) && isDate(cop?.validThrough) &&
-      cop.validFrom <= cop.validThrough && positive(cop.copPerUsd) &&
+    const npr = snapshot.npr;
+    return isDate(npr?.date) &&
       [...required].every(code => positive(npr.rates?.[code]?.sell) && positive(npr.rates[code].unit));
   }
 
   function eligibleRates(snapshot) {
-    return validRateSnapshot(snapshot) && snapshot.npr.date >= rates.npr.date &&
-      snapshot.cop.validFrom >= rates.cop.validFrom;
+    if (!validRateSnapshot(snapshot) || snapshot.cop.validFrom < rates.cop.validFrom) return false;
+    if (note.conversion === "usd") {
+      return referenceCurrencies.every(code => snapshot.usd[code].date >= rates.usd[code].date);
+    }
+    return snapshot.npr.date >= rates.npr.date;
   }
 
   function todayIn(timeZone) {
@@ -201,31 +213,46 @@
     const code = currency.value;
     const toCop = code === "COP";
     const usdToCop = note.currency === "USD" && toCop;
-    const source = rates.npr.rates[note.currency];
-    const amountNpr = source ? note.amount * source.sell / source.unit : note.amount;
-    const target = rates.npr.rates[toCop ? "USD" : code];
-    const exchanged = amountNpr * target.unit / target.sell;
-    const amount = toCop
-      ? (usdToCop ? note.amount : exchanged) * rates.cop.copPerUsd
-      : exchanged;
+    const usdReference = note.conversion === "usd";
     const locale = language === "es" ? "es-CO" : "en-GB";
+    const format = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" });
+    const readDate = value => format.format(new Date(value + "T00:00:00Z"));
+    let amount;
+    let currencyDateIsCurrent;
+
+    if (usdReference) {
+      const source = rates.usd[note.currency];
+      const target = toCop || code === "USD" ? null : rates.usd[code];
+      const amountUsd = note.amount / source.perUsd;
+      amount = toCop ? amountUsd * rates.cop.copPerUsd : amountUsd * (target?.perUsd ?? 1);
+      const sourceDate = target && target.date !== source.date
+        ? note.currency + " " + readDate(source.date) + " · " + code + " " + readDate(target.date)
+        : readDate(source.date);
+      byId("reference-date").textContent = sourceDate;
+      const utcToday = todayIn("UTC");
+      currencyDateIsCurrent = source.date === utcToday && (!target || target.date === utcToday);
+    } else {
+      const source = rates.npr.rates[note.currency];
+      const amountNpr = source ? note.amount * source.sell / source.unit : note.amount;
+      const target = rates.npr.rates[toCop ? "USD" : code];
+      const exchanged = amountNpr * target.unit / target.sell;
+      amount = toCop ? (usdToCop ? note.amount : exchanged) * rates.cop.copPerUsd : exchanged;
+      const sourceDate = byId("npr-date");
+      sourceDate.dateTime = rates.npr.date;
+      sourceDate.textContent = readDate(rates.npr.date);
+      currencyDateIsCurrent = usdToCop || rates.npr.date === todayIn("Asia/Kathmandu");
+    }
     const precision = toCop ? 0 : 2;
     const number = new Intl.NumberFormat(locale, {
       minimumFractionDigits: precision, maximumFractionDigits: precision, useGrouping: true,
     }).format(amount);
     byId("converted").value = "≈ " + number + " " + code;
-
-    const format = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" });
-    const readDate = value => format.format(new Date(value + "T00:00:00Z"));
-    const sourceDate = byId("npr-date");
-    sourceDate.dateTime = rates.npr.date;
-    sourceDate.textContent = readDate(rates.npr.date);
-    byId("npr-source").hidden = usdToCop;
+    byId("reference-source").hidden = !usdReference;
+    byId("npr-source").hidden = usdToCop || usdReference;
     byId("cop-source").hidden = !toCop;
     const copToday = todayIn("America/Bogota");
     const copValid = rates.cop.validFrom <= copToday && copToday <= rates.cop.validThrough;
-    const nprValid = rates.npr.date === todayIn("Asia/Kathmandu");
-    const upToDate = fromPublishedFile && (usdToCop || nprValid) && (!toCop || copValid);
+    const upToDate = fromPublishedFile && currencyDateIsCurrent && (!toCop || copValid);
     byId("rate-status").textContent = upToDate ? words.rateStatus : words.rateFallback;
     if (toCop) {
       const start = readDate(rates.cop.validFrom);
@@ -324,14 +351,16 @@
     if (view.locator) {
       ctx.beginPath();
       ctx.arc(...anchor, 7, 0, Math.PI * 2);
-      ctx.strokeStyle = "#277452";
+      ctx.fillStyle = "#277452";
+      ctx.fill();
+      ctx.strokeStyle = "#f7fff1";
       ctx.lineWidth = 2;
       ctx.stroke();
     }
     ctx.strokeStyle = "#1c4f38";
     ctx.lineWidth = 1.3;
     line(ctx, anchor, label);
-    drawLabel(ctx, words.countryName, label, labelSize + 10, "#163c2d", "#ffffff");
+    drawLabel(ctx, words.mapLabel ?? words.countryName, label, labelSize + 10, "#163c2d", "#ffffff");
 
     if (view.capitalLabel) {
       const city = project(definition.capital);

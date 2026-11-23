@@ -10,6 +10,8 @@ from zoneinfo import ZoneInfo
 
 NRB = "https://www.nrb.org.np/api/forex/v1/rates"
 TRM = "https://www.datos.gov.co/resource/32sa-8pi3.json"
+REFERENCE_API = "https://api.frankfurter.dev/v2/rates"
+REFERENCE_CODES = frozenset("""AED ALL ARS BAM BDT BRL BYN CAD CHF CLP CNY CZK DKK DZD EGP EUR GBP HUF INR ISK JMD JPY LBP LKR LYD MDL MXN NGN PEN PHP PKR PLN RON RSD RUB SEK TND TRY TWD UAH UYU XCD""".split())
 CURRENCIES = ("EUR", "USD", "GBP", "INR", "THB", "MYR")
 ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOT = ROOT / "piloto/assets/exchange-rates.json"
@@ -79,6 +81,32 @@ def get_colombia(today):
     }
 
 
+def get_dollar_reference(previous, today):
+    quotes = dict(previous)
+    try:
+        rows = fetch_json(REFERENCE_API, {"base": "USD"})
+    except RuntimeError as error:
+        print(error)
+        return quotes
+    if not isinstance(rows, list):
+        print("The reference provider returned an invalid rate list.")
+        return quotes
+    for row in rows:
+        if not isinstance(row, dict) or row.get("base") != "USD" or row.get("quote") not in REFERENCE_CODES:
+            continue
+        code = row["quote"]
+        try:
+            stamped = date.fromisoformat(row["date"])
+            quantity = positive(row["rate"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        stamp = stamped.isoformat()
+        if stamped <= today and stamp >= quotes.get(code, {}).get("date", ""):
+            quotes[code] = {"date": stamp, "perUsd": quantity}
+    print(f"USD currency references: {len(quotes)} of {len(REFERENCE_CODES)}.")
+    return quotes
+
+
 def refresh(path, now):
     current = json.loads(path.read_text(encoding="utf-8"))
     nepal = now.astimezone(ZoneInfo("Asia/Kathmandu")).date()
@@ -86,6 +114,7 @@ def refresh(path, now):
     new = {"npr": get_nepal(nepal), "cop": get_colombia(colombia)}
     if new["npr"]["date"] < current["npr"]["date"] or new["cop"]["validFrom"] < current["cop"]["validFrom"]:
         raise ValueError("The sources returned older rates. The existing snapshot was preserved.")
+    new["usd"] = get_dollar_reference(current.get("usd", {}), now.date())
     if new != current:
         temporary = path.with_suffix(".tmp")
         temporary.write_text(json.dumps(new, indent=2) + "\n", encoding="utf-8")

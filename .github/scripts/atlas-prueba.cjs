@@ -82,6 +82,70 @@ async function enter(page, url, title) {
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
 }
 
+async function checkCatalogue(page) {
+  await enter(page, base + "?lang=es", "Catálogo de billetes");
+  const filter = page.getByRole("combobox", { name: "País", exact: true });
+  assert.equal(await page.locator(".preview-entry:visible").count(), 7);
+  assert.equal(await page.locator("#catalogue-count").textContent(), "7 billetes");
+  await filter.selectOption("THA");
+  assert.equal(await page.locator(".preview-entry:visible").count(), 1);
+  assert.equal(await page.locator("#catalogue-count").textContent(), "1 billete");
+  assert.equal(new URL(page.url()).searchParams.get("pais"), "THA");
+  await page.getByRole("link", { name: /100 baht tailandeses/ }).click();
+  await heading(page, "100 baht tailandeses");
+  assert.equal(new URL(page.url()).searchParams.get("pais"), "THA");
+  await page.getByRole("button", { name: "English", exact: true }).click();
+  await heading(page, "100 Thai baht");
+  await page.getByRole("link", { name: "Back to catalogue", exact: true }).click();
+  await heading(page, "Banknote catalogue");
+  const english = page.getByRole("combobox", { name: "Country", exact: true });
+  assert.equal(await english.inputValue(), "THA");
+  const namedFilter = english.locator("option[value=THA]");
+  assert.equal(await namedFilter.textContent(), "Thailand");
+  assert.equal(await page.locator(".preview-entry:visible").count(), 1);
+  assert.equal(await page.locator("#catalogue-count").textContent(), "1 banknote");
+  await english.selectOption("");
+  assert.equal(await page.locator(".preview-entry:visible").count(), 7);
+  assert.equal(new URL(page.url()).searchParams.has("pais"), false);
+}
+
+async function checkNewNotes(page, rates) {
+  const notes = [
+    ["bil-023", "100 baht tailandeses", "Tailandia", "Sudeste Asiático", "THB", 100, "1D8688485", false],
+    ["bil-044", "5 dólares estadounidenses", "Estados Unidos", "América del Norte", "USD", 5, "PE44395568A", false],
+    ["bil-046", "1.000 liras italianas", "Italia", "Mediterráneo occidental", "ITL", 1000, "HD 039183 H", true],
+    ["bil-048", "500 rupias indias", "India", "Asia meridional", "INR", 500, "0SR 727538", true],
+    ["bil-052", "1 ringgit malasio", "Malasia", "Sudeste Asiático", "MYR", 1, "BJ8243628", true],
+  ];
+  for (const [id, title, country, region, currency, faceValue, series, crop] of notes) {
+    await enter(page, base + "billetes/" + id + "/?lang=es", title);
+    assert.equal(await page.locator(".serial").textContent(), series);
+    await gallery(page);
+    if (crop) {
+      assert.equal(await page.locator(".gallery img").evaluateAll(images => {
+        return images.every(image => getComputedStyle(image).clipPath.startsWith("polygon"));
+      }), true);
+    }
+    await countryMap(page, country, region);
+    await page.locator("a.reference-link[href^='https://']").waitFor();
+    if (currency === "ITL") {
+      assert.equal(await page.locator("#currency").count(), 0);
+      await page.getByRole("heading", { name: "Moneda histórica", exact: true }).waitFor();
+      continue;
+    }
+    await page.waitForFunction(date => document.querySelector("#npr-date")?.dateTime === date, rates.npr.date);
+    assert.equal(await page.locator("#currency").inputValue(), "COP");
+    assert.equal(await page.locator('#currency option[value="' + currency + '"]').count(), 0);
+    const quote = rates.npr.rates[currency];
+    const nprAmount = faceValue * quote.sell / quote.unit;
+    const nprPerUsd = rates.npr.rates.USD.sell / rates.npr.rates.USD.unit;
+    const cop = (currency === "USD" ? faceValue : nprAmount / nprPerUsd) * rates.cop.copPerUsd;
+    const expected = new Intl.NumberFormat("es-CO", {maximumFractionDigits: 0, useGrouping: true}).format(cop);
+    assert.equal(await page.locator("#converted").textContent(), "≈ " + expected + " COP");
+    assert.equal(await page.locator("#npr-source").isVisible(), currency !== "USD");
+  }
+}
+
 async function checkBrowser(engine, device, urls, rates) {
   const browser = await engine.launch();
   try {
@@ -114,8 +178,8 @@ async function checkBrowser(engine, device, urls, rates) {
     await page.getByRole("button", { name: "English", exact: true }).click();
     await heading(page, "100 Nepalese rupees");
     await page.getByRole("link", { name: "Back to catalogue", exact: true }).click();
-    await heading(page, "Pilot catalogue");
-    assert.equal(await page.locator(".preview-entry").count(), 2);
+    await heading(page, "Banknote catalogue");
+    assert.equal(await page.locator(".preview-entry").count(), 7);
     await page.getByRole("link", { name: /2 Maltese liri/ }).click();
     await heading(page, "2 Maltese liri");
     await page.getByRole("button", { name: "Español", exact: true }).click();
@@ -128,9 +192,11 @@ async function checkBrowser(engine, device, urls, rates) {
     await gallery(page);
     await countryMap(page, "Malta", "Mediterráneo central");
     await page.getByRole("link", { name: "Volver al catálogo", exact: true }).click();
-    await heading(page, "Catálogo piloto");
+    await heading(page, "Catálogo de billetes");
+    await checkCatalogue(page);
+    await checkNewNotes(page, rates);
     assert.deepEqual(errors, []);
-    console.log(device + " emulation passed for both published notes.");
+    console.log(device + " passed for the country filter, all seven notes and both QR codes.");
   } finally {
     await browser.close();
   }

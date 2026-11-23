@@ -194,8 +194,8 @@ dialog::backdrop { background: #14251fd2; }
 .home { padding-block: 2.6rem; }
 .home h1 { font-size: clamp(2.4rem, 5.5vw, 4.5rem); margin-bottom: 1.45rem; }
 .preview-entry {
-  display: grid; grid-template-columns: minmax(9rem, 1fr) minmax(13rem, 1fr);
-  max-width: 43rem; background: var(--soft); border: 1px solid var(--line);
+  display: grid; grid-template-rows: auto 1fr; min-width: 0;
+  background: var(--soft); border: 1px solid var(--line);
   border-radius: .45rem; overflow: hidden; color: var(--ink); text-decoration: none;
 }
 .preview-entry:hover { border-color: #7c9b8b; background: #e6ede3; }
@@ -226,10 +226,19 @@ dialog::backdrop { background: #14251fd2; }
   #zoom-value { min-width: 2.55rem; }
   .currency-grid select { font-size: .95rem; }
   #converted { font-size: 1.45rem; }
-  .preview-entry { grid-template-columns: 1fr; max-width: 26rem; }
 }
 
-.pilot-entries { display: grid; gap: .9rem; }
+.catalogue-entries {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  align-items: stretch; gap: 1rem;
+}
+.catalogue-controls {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end;
+  gap: .7rem 1.15rem; max-width: 100%; margin-bottom: 1.25rem;
+}
+.catalogue-filter { width: min(100%, 17rem); }
+.catalogue-filter label { display: block; margin-bottom: .32rem; font-size: .875rem; font-weight: 650; }
+#catalogue-count { color: var(--muted); min-height: 1.5rem; }
 .reference-link {
   display: inline-flex; align-items: center; min-height: 2.75rem; padding: .32rem .75rem;
   border: 1px solid var(--line); border-radius: .35rem; background: var(--soft);

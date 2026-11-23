@@ -9,6 +9,8 @@
   const rateStorage = "atlas-de-billetes-npr-rates-v1";
   const languageButtons = document.querySelectorAll("[data-language]");
   const languageLinks = document.querySelectorAll("[data-language-link]");
+  const countryFilter = byId("country-filter");
+  const catalogueCards = document.querySelectorAll("[data-catalogue-country]");
   const currency = byId("currency");
   const map = byId("country-map");
   const canvas = byId("region-map");
@@ -23,6 +25,9 @@
     return { button, image, side: button.dataset.photo, originalSrc: image.src, frame: button.querySelector(".photo-window") };
   });
 
+  const requestedCountry = new URLSearchParams(location.search).get("pais");
+  const countries = new Set(Object.values(atlasNotes).map(entry => entry.map.highlight));
+  let country = countries.has(requestedCountry) ? requestedCountry : "";
   let language = "es";
   let words;
   let photoMode = "original";
@@ -49,6 +54,37 @@
     document.title = (catalogue ? words.homeTitle : words.noteTitle) + " · Atlas de Billetes";
   }
 
+  function updateLinks() {
+    for (const link of languageLinks) {
+      if (link.getAttribute("href").startsWith("#")) continue;
+      const url = new URL(link.href);
+      url.searchParams.set("lang", language);
+      if (country) url.searchParams.set("pais", country);
+      else url.searchParams.delete("pais");
+      link.href = url.href;
+    }
+  }
+
+  function updateLocation() {
+    const url = new URL(location.href);
+    url.searchParams.set("lang", language);
+    if (country) url.searchParams.set("pais", country);
+    else url.searchParams.delete("pais");
+    try { history.replaceState(null, "", url.href); } catch {}
+  }
+
+  function updateCatalogue() {
+    if (!countryFilter) return;
+    countryFilter.value = country;
+    let visible = 0;
+    for (const card of catalogueCards) {
+      card.hidden = Boolean(country && card.dataset.catalogueCountry !== country);
+      if (!card.hidden) visible++;
+    }
+    const label = visible === 1 ? words.oneBanknote : words.manyBanknotes;
+    byId("catalogue-count").value = label.replace("{count}", visible);
+  }
+
   function setLanguage(value, remember) {
     language = value;
     words = { ...atlasCopy[language], ...note?.copy[language] };
@@ -65,20 +101,22 @@
     for (const title of document.querySelectorAll("[data-title-note]")) {
       title.textContent = atlasNotes[title.dataset.titleNote].copy[language].noteTitle;
     }
+    for (const element of document.querySelectorAll("[data-country-note]")) {
+      element.textContent = atlasNotes[element.dataset.countryNote].copy[language].countryName;
+    }
+    if (countryFilter) {
+      const options = [...countryFilter.querySelectorAll("[data-country-note]")];
+      options.sort((first, second) => first.textContent.localeCompare(second.textContent, language));
+      countryFilter.append(...options);
+    }
+    updateCatalogue();
     for (const button of languageButtons) {
       button.setAttribute("aria-pressed", String(button.dataset.language === language));
     }
-    for (const link of languageLinks) {
-      if (link.getAttribute("href").startsWith("#")) continue;
-      const url = new URL(link.href);
-      url.searchParams.set("lang", language);
-      link.href = url.href;
-    }
+    updateLinks();
     if (remember) {
       try { localStorage.setItem(preference, language); } catch {}
-      const url = new URL(location.href);
-      url.searchParams.set("lang", language);
-      try { history.replaceState(null, "", url.href); } catch {}
+      updateLocation();
     }
     updateTitle();
     if (viewer) byId("viewer-title").textContent = words[photoSide];
@@ -139,9 +177,11 @@
     const positive = value => Number.isFinite(value) && value > 0;
     const npr = snapshot?.npr;
     const cop = snapshot?.cop;
+    const required = new Set(["EUR", "USD", "GBP", "INR"]);
+    if (note.currency !== "NPR") required.add(note.currency);
     return isDate(npr?.date) && isDate(cop?.validFrom) && isDate(cop?.validThrough) &&
       cop.validFrom <= cop.validThrough && positive(cop.copPerUsd) &&
-      ["EUR", "USD", "GBP", "INR"].every(code => positive(npr.rates?.[code]?.sell) && positive(npr.rates[code].unit));
+      [...required].every(code => positive(npr.rates?.[code]?.sell) && positive(npr.rates[code].unit));
   }
 
   function eligibleRates(snapshot) {
@@ -160,9 +200,14 @@
   function updateConversion() {
     const code = currency.value;
     const toCop = code === "COP";
-    const rate = rates.npr.rates[toCop ? "USD" : code];
-    const exchanged = note.amount * rate.unit / rate.sell;
-    const amount = toCop ? exchanged * rates.cop.copPerUsd : exchanged;
+    const usdToCop = note.currency === "USD" && toCop;
+    const source = rates.npr.rates[note.currency];
+    const amountNpr = source ? note.amount * source.sell / source.unit : note.amount;
+    const target = rates.npr.rates[toCop ? "USD" : code];
+    const exchanged = amountNpr * target.unit / target.sell;
+    const amount = toCop
+      ? (usdToCop ? note.amount : exchanged) * rates.cop.copPerUsd
+      : exchanged;
     const locale = language === "es" ? "es-CO" : "en-GB";
     const precision = toCop ? 0 : 2;
     const number = new Intl.NumberFormat(locale, {
@@ -175,11 +220,12 @@
     const sourceDate = byId("npr-date");
     sourceDate.dateTime = rates.npr.date;
     sourceDate.textContent = readDate(rates.npr.date);
+    byId("npr-source").hidden = usdToCop;
     byId("cop-source").hidden = !toCop;
     const copToday = todayIn("America/Bogota");
     const copValid = rates.cop.validFrom <= copToday && copToday <= rates.cop.validThrough;
     const nprValid = rates.npr.date === todayIn("Asia/Kathmandu");
-    const upToDate = fromPublishedFile && nprValid && (!toCop || copValid);
+    const upToDate = fromPublishedFile && (usdToCop || nprValid) && (!toCop || copValid);
     byId("rate-status").textContent = upToDate ? words.rateStatus : words.rateFallback;
     if (toCop) {
       const start = readDate(rates.cop.validFrom);
@@ -285,7 +331,7 @@
     ctx.strokeStyle = "#1c4f38";
     ctx.lineWidth = 1.3;
     line(ctx, anchor, label);
-    drawLabel(ctx, note.country, label, labelSize + 10, "#163c2d", "#ffffff");
+    drawLabel(ctx, words.countryName, label, labelSize + 10, "#163c2d", "#ffffff");
 
     if (view.capitalLabel) {
       const city = project(definition.capital);
@@ -336,6 +382,15 @@
   }
 
   setLanguage(getLanguage(), false);
+  if (countryFilter) {
+    byId("catalogue-controls").hidden = false;
+    countryFilter.addEventListener("change", () => {
+      country = countryFilter.value;
+      updateCatalogue();
+      updateLinks();
+      updateLocation();
+    });
+  }
   for (const button of languageButtons) {
     button.addEventListener("click", () => setLanguage(button.dataset.language, true));
   }

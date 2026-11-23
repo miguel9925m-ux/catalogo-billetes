@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
-  <meta name="description" content="Atlas de Billetes. Fichas piloto de Nepal y Malta.">
+  <meta name="description" content="Atlas de Billetes. Colección de billetes del mundo en español e inglés.">
   <title>Atlas de Billetes</title>
   <link rel="stylesheet" href="assets/atlas.css">
 </head>
@@ -23,23 +23,92 @@
     </div>
   </header>
   <main class="shell home" id="catalogo">
-    <h1 data-copy="homeTitle">Catálogo piloto</h1>
-    <div class="pilot-entries">
-      <a class="preview-entry" href="billetes/bil-049/index.html" data-language-link>
-        <span class="photo-window preview-image" data-home-photo="BIL-049">
-          <img src="assets/nepal-anverso.jpg" width="1050" height="788" alt="">
+    <h1 data-copy="homeTitle">Catálogo de billetes</h1>
+    <div class="catalogue-controls" id="catalogue-controls" hidden>
+      <div class="catalogue-filter">
+        <label for="country-filter" data-copy="countryFilter">País</label>
+        <div class="select-shell">
+          <select id="country-filter">
+            <option value="" data-copy="allCountries">Todos los países</option>
+            <option value="USA" data-country-note="BIL-044">Estados Unidos</option>
+            <option value="IND" data-country-note="BIL-048">India</option>
+            <option value="ITA" data-country-note="BIL-046">Italia</option>
+            <option value="MYS" data-country-note="BIL-052">Malasia</option>
+            <option value="MLT" data-country-note="BIL-073">Malta</option>
+            <option value="NPL" data-country-note="BIL-049">Nepal</option>
+            <option value="THA" data-country-note="BIL-023">Tailandia</option>
+          </select>
+        </div>
+      </div>
+      <output id="catalogue-count" for="country-filter" aria-live="polite"></output>
+    </div>
+    <div class="catalogue-entries">
+      <a class="preview-entry" href="billetes/bil-023/index.html" data-language-link data-catalogue-country="THA">
+        <span class="photo-window preview-image" data-home-photo="BIL-023">
+          <img src="assets/bil-023-anverso.jpg" width="1050" height="491" loading="lazy" decoding="async" alt="">
         </span>
         <span class="preview-entry-text">
-          <span class="note-id">BIL-049 · Nepal</span>
+          <span class="note-id">BIL-023 · <span data-country-note="BIL-023">Tailandia</span></span>
+          <span class="preview-title" data-title-note="BIL-023">100 baht tailandeses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-044/index.html" data-language-link data-catalogue-country="USA">
+        <span class="photo-window preview-image" data-home-photo="BIL-044">
+          <img src="assets/bil-044-anverso.jpg" width="1050" height="440" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-044 · <span data-country-note="BIL-044">Estados Unidos</span></span>
+          <span class="preview-title" data-title-note="BIL-044">5 dólares estadounidenses</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-046/index.html" data-language-link data-catalogue-country="ITA">
+        <span class="photo-window preview-image" data-home-photo="BIL-046">
+          <img src="assets/bil-046-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-046 · <span data-country-note="BIL-046">Italia</span></span>
+          <span class="preview-title" data-title-note="BIL-046">1.000 liras italianas</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-048/index.html" data-language-link data-catalogue-country="IND">
+        <span class="photo-window preview-image" data-home-photo="BIL-048">
+          <img src="assets/bil-048-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-048 · <span data-country-note="BIL-048">India</span></span>
+          <span class="preview-title" data-title-note="BIL-048">500 rupias indias</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-049/index.html" data-language-link data-catalogue-country="NPL">
+        <span class="photo-window preview-image" data-home-photo="BIL-049">
+          <img src="assets/nepal-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-049 · <span data-country-note="BIL-049">Nepal</span></span>
           <span class="preview-title" data-title-note="BIL-049">100 rupias nepalíes</span>
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>
-      </a><a class="preview-entry" href="billetes/bil-073/index.html" data-language-link>
-        <span class="photo-window preview-image" data-home-photo="BIL-073">
-          <img src="assets/malta-anverso.jpg" width="1050" height="506" alt="">
+      </a>
+      <a class="preview-entry" href="billetes/bil-052/index.html" data-language-link data-catalogue-country="MYS">
+        <span class="photo-window preview-image" data-home-photo="BIL-052">
+          <img src="assets/bil-052-anverso.jpg" width="1050" height="788" loading="lazy" decoding="async" alt="">
         </span>
         <span class="preview-entry-text">
-          <span class="note-id">BIL-073 · Malta</span>
+          <span class="note-id">BIL-052 · <span data-country-note="BIL-052">Malasia</span></span>
+          <span class="preview-title" data-title-note="BIL-052">1 ringgit malasio</span>
+          <span class="entry-action" data-copy="openNote">Abrir ficha</span>
+        </span>
+      </a>
+      <a class="preview-entry" href="billetes/bil-073/index.html" data-language-link data-catalogue-country="MLT">
+        <span class="photo-window preview-image" data-home-photo="BIL-073">
+          <img src="assets/malta-anverso.jpg" width="1050" height="506" loading="lazy" decoding="async" alt="">
+        </span>
+        <span class="preview-entry-text">
+          <span class="note-id">BIL-073 · <span data-country-note="BIL-073">Malta</span></span>
           <span class="preview-title" data-title-note="BIL-073">2 liras maltesas</span>
           <span class="entry-action" data-copy="openNote">Abrir ficha</span>
         </span>

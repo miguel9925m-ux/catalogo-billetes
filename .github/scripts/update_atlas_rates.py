@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 
 NRB = "https://www.nrb.org.np/api/forex/v1/rates"
 TRM = "https://www.datos.gov.co/resource/32sa-8pi3.json"
-CURRENCIES = ("EUR", "USD", "GBP", "INR")
+CURRENCIES = ("EUR", "USD", "GBP", "INR", "THB", "MYR")
 ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOT = ROOT / "piloto/assets/exchange-rates.json"
 

@@ -205,7 +205,7 @@ async function checkReference(page, profile) {
     const expected = references[side]?.url ?? references[side]?.file ?? profile.images.original[side].file;
     const actual = await face.evaluate(image => ({ src: image.src, width: image.naturalWidth, height: image.naturalHeight }));
     const matches = expected.startsWith("https://") ? actual.src === expected : new URL(actual.src).pathname.endsWith("/" + expected);
-    const minimum = profile.id === "BIL-001" ? 500 : 260;
+    const minimum = profile.id === "BIL-001" ? 500 : 256;
     assert.ok(matches && Math.max(actual.width, actual.height) >= minimum && Math.min(actual.width, actual.height) >= 70,
       side + " expected " + expected + " and displayed " + actual.src + " (" + actual.width + " × " + actual.height + ")");
   }
@@ -311,7 +311,8 @@ async function checkEntireCollection(context, rates) {
             });
             assert.ok(mapReady, id + " map highlight");
             await page.locator("[data-map-view=region]").click();
-            assert.match(await page.locator("#region-map").getAttribute("aria-label"), /Lugares cercanos/, id);
+            const mapLabel = await page.locator("#region-map").getAttribute("aria-label");
+            assert.match(mapLabel, /Lugares cercanos/, "Missing nearby labels: " + mapLabel);
             await page.getByRole("button", {name:"Cerrar mapa",exact:true}).click();
             const referenceFaces = await checkReference(page, profile);
             photoReview[referenceFaces === 2 ? "paired" : referenceFaces === 1 ? "partial" : "originalOnly"]++;

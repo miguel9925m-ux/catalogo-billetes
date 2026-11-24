@@ -1,0 +1,29 @@
+name: Inspeccionar imágenes didácticas del Atlas
+on:
+  push:
+    branches: [atlas-revision-imagenes]
+permissions:
+  contents: read
+jobs:
+  galeria:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v6
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/atlas-auditoria" --no-save --no-package-lock playwright@1.62.1
+          "$RUNNER_TEMP/atlas-auditoria/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Inspeccionar las imágenes servidas en las fichas
+        run: NODE_PATH="$RUNNER_TEMP/atlas-auditoria/node_modules" node .github/scripts/atlas-revision-imagenes.cjs
+  banxico:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Inspeccionar la lámina oficial de Banco de México
+        run: |
+          python3 -m pip install --quiet Pillow pymupdf
+          mkdir -p "$RUNNER_TEMP/atlas-banxico"
+          curl --fail --silent --show-error --location --retry 2 --max-time 35 'https://www.banxico.org.mx/billetes-y-monedas/d/%7B30EA975C-9A12-F38C-5E26-2E4DA537C62C%7D.pdf' --output "$RUNNER_TEMP/atlas-banxico/banxico.pdf"
+          python3 .github/scripts/atlas-material-banxico.py "$RUNNER_TEMP/atlas-banxico"

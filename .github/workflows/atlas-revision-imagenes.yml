@@ -26,8 +26,11 @@ jobs:
                   raw=response.read()
               with Image.open(BytesIO(raw)) as photo:
                   assert photo.format == 'JPEG'
+                  photo.thumbnail((720, 1400), Image.Resampling.LANCZOS)
                   width,height=photo.size
-                  photo.verify()
+                  buffer=BytesIO()
+                  photo.convert('RGB').save(buffer,'JPEG',quality=88,optimize=True)
+                  raw=buffer.getvalue()
               print('APPROVED_FILE',json.dumps({'side':side,'width':width,'height':height,'sha256':hashlib.sha256(raw).hexdigest()}))
               encoded=base64.b64encode(raw).decode('ascii')
               for offset in range(0,len(encoded),5200):

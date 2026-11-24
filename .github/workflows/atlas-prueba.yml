@@ -6,20 +6,20 @@ on:
     paths:
       - ".github/workflows/atlas-prueba.yml"
       - ".github/scripts/atlas-prueba.cjs"
-      - "piloto/qr-nepal.png"
-      - "piloto/qr-malta.png"
+      - "piloto/**"
+      - "!piloto/assets/exchange-rates.json"
 permissions:
   contents: read
 
 jobs:
   movil:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 13
     steps:
       - uses: actions/checkout@v6
       - name: Preparar los navegadores
         run: |
           npm install --prefix "$RUNNER_TEMP/atlas-prueba" --no-save --no-package-lock playwright@1.62.1 jsqr@1.4.0 pngjs@7.0.0
           "$RUNNER_TEMP/atlas-prueba/node_modules/.bin/playwright" install --with-deps chromium webkit
-      - name: Escanear los QR y comprobar ambas fichas
+      - name: Comprobar las 77 fichas y escanear los QR del piloto
         run: NODE_PATH="$RUNNER_TEMP/atlas-prueba/node_modules" node .github/scripts/atlas-prueba.cjs

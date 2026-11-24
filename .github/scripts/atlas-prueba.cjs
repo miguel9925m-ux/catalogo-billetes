@@ -1,4 +1,6 @@
 const assert = require("node:assert/strict");
+const { createHash } = require("node:crypto");
+const { readFile } = require("node:fs/promises");
 const { setTimeout: delay } = require("node:timers/promises");
 const { chromium, devices, webkit } = require("playwright");
 const { PNG } = require("pngjs");
@@ -22,6 +24,33 @@ async function read(url) {
     if (attempt < 11) await delay(5_000);
   }
   throw error;
+}
+
+async function waitForDeployment() {
+  const assets = ["pilot-data.js", "atlas.js", "map-data.js", "atlas.css"];
+  const stamp = content => createHash("sha256").update(content).digest("hex").slice(0, 12);
+  const expected = await Promise.all(assets.map(async filename => stamp(await readFile("piloto/assets/" + filename))));
+  for (let attempt = 0; attempt < 32; attempt++) {
+    try {
+      const url = base + "?verification=" + Date.now();
+      const page = await (await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(6_000) })).text();
+      const wanted = assets.filter(name => name !== "map-data.js");
+      if (wanted.every(name => page.includes(name + "?v=" + expected[assets.indexOf(name)]))) {
+        const responses = await Promise.all(assets.map((name, index) =>
+          fetch(base + "assets/" + name + "?v=" + expected[index], {
+            cache: "no-store", signal: AbortSignal.timeout(6_000),
+          })));
+        if (responses.every(response => response.ok)) {
+          const hashes = await Promise.all(responses.map(async response => stamp(Buffer.from(await response.arrayBuffer()))));
+          if (hashes.every((hash, index) => hash === expected[index])) return;
+        }
+      }
+    } catch {
+      // Pages can still be publishing the commit.
+    }
+    await delay(5_000);
+  }
+  throw new Error("The deployed Atlas assets did not match this revision.");
 }
 
 async function scanCodes() {
@@ -127,7 +156,7 @@ async function checkNewNotes(page, rates) {
       }), true);
     }
     await countryMap(page, country, region);
-    await page.locator("a.reference-link[href^='https://']").waitFor();
+    assert.ok(await page.locator(".references a[href^='https://']").count());
     if (currency === "ITL") {
       assert.equal(await page.locator("#currency").count(), 0);
       await page.getByRole("heading", { name: "Moneda histórica", exact: true }).waitFor();
@@ -144,6 +173,81 @@ async function checkNewNotes(page, rates) {
     assert.equal(await page.locator("#converted").textContent(), "≈ " + expected + " COP");
     assert.equal(await page.locator("#npr-source").isVisible(), currency !== "USD");
   }
+}
+
+async function checkReference(page, profile) {
+  const references = profile.images.reference;
+  assert.equal(await page.locator(".photo-controls a").count(), references ? 1 : 0, profile.id);
+  if (!references) return 0;
+
+  if (references.sheet) {
+    await page.locator("#reference-sheet").click();
+    await page.locator("#photo-viewer[open]").waitFor();
+    const shape = await page.locator("#viewer-photo").evaluate(async image => {
+      await image.decode();
+      return { src: image.src, width: image.naturalWidth };
+    });
+    assert.equal(shape.src, references.sheet.url, profile.id);
+    assert.ok(shape.width >= 160, profile.id);
+    await page.locator("#photo-viewer").getByRole("button", { name: "Cerrar foto", exact: true }).click();
+    return 2;
+  }
+
+  const referenceButton = page.locator("[data-photo-mode=reference]");
+  await referenceButton.click();
+  await page.waitForFunction(() =>
+    document.querySelector("[data-photo-mode=reference]").getAttribute("aria-pressed") === "true" ||
+    (document.querySelector("#photo-status").textContent && !document.querySelector("#photo-status").textContent.includes("Cargando"))
+  );
+  for (const side of ["front", "back"]) {
+    const face = page.locator('[data-photo="' + side + '"] img');
+    await face.evaluate(image => image.decode());
+    const expected = references[side]?.url ?? references[side]?.file ?? profile.images.original[side].file;
+    const actual = await face.evaluate(image => ({ src: image.src, width: image.naturalWidth, height: image.naturalHeight }));
+    const matches = expected.startsWith("https://") ? actual.src === expected : new URL(actual.src).pathname.endsWith("/" + expected);
+    assert.ok(matches && actual.width >= 100 && actual.height >= 100,
+      profile.id + " " + side + " expected " + expected + " and displayed " + actual.src);
+  }
+  const count = Number(Boolean(references.front)) + Number(Boolean(references.back));
+  await page.locator("[data-photo-mode=original]").click();
+  assert.equal(await referenceButton.getAttribute("aria-pressed"), "false", profile.id);
+  return count;
+}
+
+async function checkExamples(page) {
+  await enter(page, base + "billetes/bil-001/?lang=es", "20 pesos mexicanos");
+  const profile = await page.evaluate(() => window.atlasNotes["BIL-001"]);
+  assert.equal(await checkReference(page, profile), 2);
+  const ref = page.getByRole("button", { name: "Muestra didáctica", exact: true });
+  await ref.click();
+  await page.waitForFunction(() => document.querySelector("[data-photo-mode=reference]").getAttribute("aria-pressed") === "true");
+  await page.getByRole("button", { name: "Ampliar reverso", exact: true }).click();
+  const enlarged = page.locator("#viewer-photo");
+  await enlarged.evaluate(image => image.decode());
+  assert.equal(await enlarged.getAttribute("src"), profile.images.reference.back.url);
+  await page.getByRole("button", { name: "Ampliar foto", exact: true }).click();
+  assert.equal(await page.locator("#zoom-value").textContent(), "150%");
+  await page.getByRole("button", { name: "Cerrar foto", exact: true }).click();
+
+  await enter(page, base + "billetes/bil-007/?lang=es", "50 dinares serbios");
+  await page.getByRole("button", { name: "Ubicar Serbia", exact: true }).click();
+  const map = page.locator("#region-map");
+  let label = await map.getAttribute("aria-label");
+  assert.match(label, /Belgrado/);
+  assert.match(label, /Ruman[ií]a/);
+  assert.match(label, /Bulgaria/);
+  assert.match(label, /Croacia|Bosnia y Herzegovina|Hungría/);
+  console.log("Serbia map in Spanish → " + label);
+  await page.getByRole("button", { name: "Cerrar mapa", exact: true }).click();
+  await page.getByRole("button", { name: "English", exact: true }).click();
+  await page.getByRole("button", { name: "Locate Serbia", exact: true }).click();
+  label = await map.getAttribute("aria-label");
+  assert.match(label, /Belgrade/);
+  assert.match(label, /Romania/);
+  assert.match(label, /Bulgaria/);
+  assert.match(label, /Croatia|Bosnia and Herzegovina|Hungary/);
+  await page.getByRole("button", { name: "Close map", exact: true }).click();
+  console.log("Mexican reference images load in-page. Serbia, Belgrade and nearby countries are labeled in both languages.");
 }
 
 async function checkEntireCollection(context, rates) {
@@ -163,6 +267,8 @@ async function checkEntireCollection(context, rates) {
     await home.locator("#country-filter").selectOption("GBR");
     assert.equal(await home.locator(".preview-entry:visible").count(), 3);
 
+    const photoReview = { paired: 0, partial: 0, originalOnly: 0 };
+    const failures = [];
     const pages = await Promise.all(Array.from({ length: 6 }, () => context.newPage()));
     try {
       for (let i = 0; i < links.length; i += pages.length) {
@@ -203,7 +309,11 @@ async function checkEntireCollection(context, rates) {
               return false;
             });
             assert.ok(mapReady, id + " map highlight");
+            await page.locator("[data-map-view=region]").click();
+            assert.match(await page.locator("#region-map").getAttribute("aria-label"), /Lugares cercanos/, id);
             await page.getByRole("button", {name:"Cerrar mapa",exact:true}).click();
+            const referenceFaces = await checkReference(page, profile);
+            photoReview[referenceFaces === 2 ? "paired" : referenceFaces === 1 ? "partial" : "originalOnly"]++;
             if (profile.conversion === "historical") {
               assert.equal(await page.locator("#currency").count(), 0, id);
               assert.ok(await page.locator(".historical-panel p").textContent(), id);
@@ -222,8 +332,7 @@ async function checkEntireCollection(context, rates) {
             await heading(page, profile.copy.en.noteTitle);
             assert.equal(javascriptError, null, id);
           } catch (error) {
-            error.message = id + " " + error.message;
-            throw error;
+            failures.push(id + " " + error.message);
           } finally {
             page.off("pageerror", listen);
           }
@@ -232,7 +341,9 @@ async function checkEntireCollection(context, rates) {
     } finally {
       await Promise.all(pages.map(page => page.close()));
     }
-    console.log("All 77 published URLs, 154 original images, 50 filters, title translations, maps and currency sections verified.");
+    console.log("Reference image coverage " + JSON.stringify(photoReview));
+    assert.deepEqual(failures, []);
+    console.log("All 77 published URLs, 154 original images, 50 filters, title translations, labeled maps, reference images and currency sections verified.");
   } finally {
     await home.close();
   }
@@ -255,7 +366,7 @@ async function checkBrowser(engine, device, urls, rates) {
     await page.locator("#currency").selectOption("EUR");
     assert.match(await page.locator("#converted").textContent(), / EUR$/);
     await gallery(page);
-    await page.getByRole("button", { name: "Muestra oficial", exact: true }).click();
+    await page.getByRole("button", { name: "Muestra didáctica", exact: true }).click();
     await page.locator(".gallery .specimen-mark").first().waitFor();
     assert.equal(await page.locator(".gallery img").first().evaluate(async image => {
       await image.decode();
@@ -280,13 +391,14 @@ async function checkBrowser(engine, device, urls, rates) {
     assert.equal(await page.locator(".serial").textContent(), "A/16 158527");
     assert.equal(await page.locator("#currency").count(), 0);
     await page.getByRole("heading", { name: "Moneda histórica" }).waitFor();
-    assert.match(await page.getByRole("link", { name: /imágenes de referencia del BCE/ }).getAttribute("href"), /ecb\.europa\.eu/);
+    assert.match(await page.getByRole("link", { name: /Banco Central Europeo · billetes en liras maltesas/ }).getAttribute("href"), /ecb\.europa\.eu/);
     await gallery(page);
     await countryMap(page, "Malta", "Mediterráneo central");
     await page.getByRole("link", { name: "Volver al catálogo", exact: true }).click();
     await heading(page, "Catálogo de billetes");
     await checkCatalogue(page);
     await checkNewNotes(page, rates);
+    await checkExamples(page);
     assert.deepEqual(errors, []);
     if (device === "Pixel 7") await checkEntireCollection(context, rates);
     console.log(device + " passed catalogue navigation, both QR codes and the representative collection cases.");
@@ -296,6 +408,7 @@ async function checkBrowser(engine, device, urls, rates) {
 }
 
 (async () => {
+  await waitForDeployment();
   const urls = await scanCodes();
   const rates = await (await read(rateUrl)).json();
   await Promise.all([

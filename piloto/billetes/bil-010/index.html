@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>2.000 pesos argentinos · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-010" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -45,7 +45,12 @@
       </header>
 
       <div class="photo-controls">
-        <a class="reference-link" href="https://www.bcra.gob.ar/billetes-y-monedas-en-vigencia/" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver referencia de la edición</a>
+        <button type="button" class="reference-sheet" id="reference-sheet"
+          data-image="https://www.bcra.gob.ar/archivos/Imagenes/Noticias/MEDIDAS-SEGURIDAD-PRENSA-Billete-%242000-CIRC-web2.jpg" aria-haspopup="dialog" data-copy="referenceSheet">Ver anverso y reverso de referencia</button>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://www.bcra.gob.ar/billete-de-2000-de-circulacion/" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
       </div>
 
       <div class="gallery">
@@ -54,13 +59,14 @@
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
               <img src="../../assets/bil-010-anverso.jpg" width="1050" height="449"
-                alt="Ramón Carrillo y Cecilia Grierson, con el valor 2000 y el motivo verde de seguridad." data-alt="frontAlt">
+                alt="Ramón Carrillo y Cecilia Grierson, con el valor 2000 y el motivo verde de seguridad." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">Ramón Carrillo y Cecilia Grierson, con el valor 2000 y el motivo verde de seguridad.</span>
           </figcaption>
         </figure>
@@ -69,13 +75,14 @@
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
               <img src="../../assets/bil-010-reverso.jpg" width="1050" height="411"
-                alt="Edificio del Instituto Nacional de Microbiología, pabellón Carlos G. Malbrán." data-alt="backAlt">
+                alt="Edificio del Instituto Nacional de Microbiología, pabellón Carlos G. Malbrán." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="backCaption">Edificio del Instituto Nacional de Microbiología, pabellón Carlos G. Malbrán.</span>
           </figcaption>
         </figure>
@@ -87,7 +94,7 @@
           <p data-copy="story">El Banco Central dedicó los dos mil pesos a la salud pública argentina. Cecilia Grierson fue la primera médica del país. Ramón Carrillo impulsó políticas sanitarias desde el Estado.</p>
           <div class="look">
             <h3 data-copy="lookTitle">Fecha y edición</h3>
-            <p data-copy="look">Sin año de edición visible</p>
+            <p data-copy="look">El hilo de seguridad verde identifica la variante que entró en circulación el 7 de noviembre de 2023. El año de impresión del ejemplar no figura en el billete.</p>
           </div>
         </section>
 
@@ -134,8 +141,8 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://www.bcra.gob.ar/billetes-y-monedas-en-vigencia/" target="_blank" rel="noopener noreferrer" data-copy="source1">bcra.gob.ar</a></li>
-            <li><a href="https://www.bcra.gob.ar/billete-conmemorativo-de-2000/" target="_blank" rel="noopener noreferrer" data-copy="source2">bcra.gob.ar</a></li>
+            <li><a href="https://www.bcra.gob.ar/billete-de-2000-de-circulacion/" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Central de la República Argentina · 2.000 pesos con hilo verde</a></li>
+            <li><a href="https://www.bcra.gob.ar/billetes-y-monedas-en-vigencia/" target="_blank" rel="noopener noreferrer" data-copy="source2">bcra.gob.ar</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -178,13 +185,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

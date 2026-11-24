@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>1.000 liras italianas · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-046" data-rate-url="" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -45,7 +45,12 @@
       </header>
 
       <div class="photo-controls">
-        <a class="reference-link" href="https://www.ecb.europa.eu/euro/exchange/it/html/index.it.html" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver imágenes de las liras en el BCE</a>
+        <button type="button" class="reference-sheet" id="reference-sheet"
+          data-image="https://upload.wikimedia.org/wikipedia/commons/7/76/Lire_1000_%28Maria_Montessori%29.jpg" aria-haspopup="dialog" data-copy="referenceSheet">Ver anverso y reverso de referencia</button>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://commons.wikimedia.org/wiki/File:Lire_1000_(Maria_Montessori).jpg" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
       </div>
 
       <div class="gallery">
@@ -54,13 +59,14 @@
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
               <img src="../../assets/bil-046-anverso.jpg" width="1050" height="788"
-                alt="Maria Montessori y los escudos de las repúblicas marítimas." data-alt="frontAlt">
+                alt="Maria Montessori y los escudos de las repúblicas marítimas." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">Maria Montessori y los escudos de las repúblicas marítimas.</span>
           </figcaption>
         </figure>
@@ -69,13 +75,14 @@
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
               <img src="../../assets/bil-046-reverso.jpg" width="1050" height="788"
-                alt="Dos niños estudiando, según una obra de Armando Spadini." data-alt="backAlt">
+                alt="Dos niños estudiando, según una obra de Armando Spadini." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="backCaption">Dos niños estudiando, según una obra de Armando Spadini.</span>
           </figcaption>
         </figure>
@@ -111,8 +118,9 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://www.bancaditalia.it/servizi-cittadino/musei-collezioni/museo-banconota/emissioni/normativa_1981_97.pdf?language_id=1" target="_blank" rel="noopener noreferrer" data-copy="bankSource">Decreto del billete tipo 1990 · Banca d’Italia</a></li>
-            <li><a href="https://www.ecb.europa.eu/euro/intro/html/index.es.html" target="_blank" rel="noopener noreferrer" data-copy="historicalSource">Tipos de conversión al euro · Banco Central Europeo</a></li>
+            <li><a href="https://commons.wikimedia.org/wiki/File:Lire_1000_(Maria_Montessori).jpg" target="_blank" rel="noopener noreferrer" data-copy="source1">Escaneo de F l a n k e r · CC BY-SA 3.0</a></li>
+            <li><a href="https://www.bancaditalia.it/servizi-cittadino/musei-collezioni/museo-banconota/emissioni/normativa_1981_97.pdf?language_id=1" target="_blank" rel="noopener noreferrer" data-copy="source2">Decreto del billete tipo 1990 · Banca d’Italia</a></li>
+            <li><a href="https://www.ecb.europa.eu/euro/intro/html/index.es.html" target="_blank" rel="noopener noreferrer" data-copy="source3">Tipos de conversión al euro · Banco Central Europeo</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -155,13 +163,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

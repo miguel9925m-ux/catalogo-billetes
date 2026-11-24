@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>500 pesos argentinos · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-009" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -44,9 +44,7 @@
         </button>
       </header>
 
-      <div class="photo-controls">
-        <a class="reference-link" href="https://www.bcra.gob.ar/noticias/ya-se-encuentra-en-circulacion-el-billete-de-500/" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver referencia de la edición</a>
-      </div>
+      
 
       <div class="gallery">
         <figure>
@@ -54,13 +52,14 @@
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
               <img src="../../assets/bil-009-anverso.jpg" width="429" height="1050"
-                alt="Yaguareté y vegetación, en un diseño que se lee en vertical." data-alt="frontAlt">
+                alt="Yaguareté y vegetación, en un diseño que se lee en vertical." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">Yaguareté y vegetación, en un diseño que se lee en vertical.</span>
           </figcaption>
         </figure>
@@ -69,14 +68,15 @@
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
               <img src="../../assets/bil-009-reverso.jpg" width="1050" height="408"
-                alt="Selva del noreste argentino, mapa del país y motivos vegetales." data-alt="backAlt">
+                alt="Selva del noreste argentino y un mapa de la distribución histórica y contemporánea del yaguareté." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
-            <span data-copy="backCaption">Selva del noreste argentino, mapa del país y motivos vegetales.</span>
+            <span class="face-photo-kind" hidden></span>
+            <span data-copy="backCaption">Selva del noreste argentino y un mapa de la distribución histórica y contemporánea del yaguareté.</span>
           </figcaption>
         </figure>
       </div>
@@ -134,8 +134,9 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://www.bcra.gob.ar/noticias/ya-se-encuentra-en-circulacion-el-billete-de-500/" target="_blank" rel="noopener noreferrer" data-copy="source1">bcra.gob.ar</a></li>
-            <li><a href="https://www.bcra.gob.ar/archivos/Pdfs/prensa_comunicacion/yaguarete/la_nueva_familia_de_billetes.pdf" target="_blank" rel="noopener noreferrer" data-copy="source2">bcra.gob.ar</a></li>
+            <li><a href="https://www.bcra.gob.ar/billete-de-500/" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Central de la República Argentina · 500 pesos del yaguareté</a></li>
+            <li><a href="https://www.bcra.gob.ar/noticias/ya-se-encuentra-en-circulacion-el-billete-de-500/" target="_blank" rel="noopener noreferrer" data-copy="source2">bcra.gob.ar</a></li>
+            <li><a href="https://www.bcra.gob.ar/archivos/Pdfs/prensa_comunicacion/yaguarete/la_nueva_familia_de_billetes.pdf" target="_blank" rel="noopener noreferrer" data-copy="source3">bcra.gob.ar</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -178,13 +179,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

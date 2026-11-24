@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>200 liras turcas · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-034" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -45,7 +45,14 @@
       </header>
 
       <div class="photo-controls">
-        <a class="reference-link" href="https://tcmb.gov.tr/wps/wcm/connect/EN/TCMB%2BEN/Main%2BMenu/Announcements/Press%2BReleases/2023/ANO2023-50" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver referencia de la edición</a>
+        <div class="view-switch" role="group" aria-label="Tipo de imagen" data-label="photoType">
+          <button type="button" data-photo-mode="original" aria-pressed="true" data-copy="collectionPhoto">Ejemplar de la colección</button>
+          <button type="button" data-photo-mode="reference" aria-pressed="false" data-copy="referencePhoto">Muestra didáctica</button>
+        </div>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://tcmb.gov.tr/wps/wcm/connect/EN/TCMB%2BEN/Main%2BMenu/Banknotes/Banknotes%2Bin%2BCirculation%2Band%2BTheir%2BSecurity%2BFeatures/7-Series-Turkish-Lira/200%2BTurkish%2BLira" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
       </div>
 
       <div class="gallery">
@@ -53,14 +60,15 @@
           <button class="photo-button" type="button" data-photo="front" aria-haspopup="dialog"
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
-              <img src="../../assets/bil-034-anverso.jpg" width="1050" height="476"
-                alt="Atatürk, estrella y cifras del valor en tonos violetas." data-alt="frontAlt">
+              <img src="../../assets/bil-034-anverso.jpg" data-reference="https://tcmb.gov.tr/wps/wcm/connect/200dd1b4-0900-42a8-89a8-cc44092af476/1/E9%2BT7%2B200%2BTL%2Bon%2Byuz_specimen.jpg?MOD=AJPERES" width="1050" height="476"
+                alt="Atatürk, estrella y cifras del valor en tonos violetas." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">Atatürk, estrella y cifras del valor en tonos violetas.</span>
           </figcaption>
         </figure>
@@ -68,14 +76,15 @@
           <button class="photo-button" type="button" data-photo="back" aria-haspopup="dialog"
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
-              <img src="../../assets/bil-034-reverso.jpg" width="1050" height="481"
-                alt="Poeta Yunus Emre, su mausoleo, palomas y una inscripción manuscrita." data-alt="backAlt">
+              <img src="../../assets/bil-034-reverso.jpg" data-reference="https://tcmb.gov.tr/wps/wcm/connect/200dd1b4-0900-42a8-89a8-cc44092af476/2/E9%2BT7%2B200%2BTL%2Barka%2Byuz_specimen.jpg?MOD=AJPERES" width="1050" height="481"
+                alt="Poeta Yunus Emre, su mausoleo, palomas y una inscripción manuscrita." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="backCaption">Poeta Yunus Emre, su mausoleo, palomas y una inscripción manuscrita.</span>
           </figcaption>
         </figure>
@@ -134,8 +143,9 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://tcmb.gov.tr/wps/wcm/connect/EN/TCMB%2BEN/Main%2BMenu/Announcements/Press%2BReleases/2023/ANO2023-50" target="_blank" rel="noopener noreferrer" data-copy="source1">tcmb.gov.tr</a></li>
-            <li><a href="https://sanalmuze.tcmb.gov.tr/wps/wcm/connect/sanalmuze/tr/main%2Bmenu/Emisyon%2BGruplari/emisyon%2Bgruplari/" target="_blank" rel="noopener noreferrer" data-copy="source2">sanalmuze.tcmb.gov.tr</a></li>
+            <li><a href="https://tcmb.gov.tr/wps/wcm/connect/EN/TCMB%2BEN/Main%2BMenu/Banknotes/Banknotes%2Bin%2BCirculation%2Band%2BTheir%2BSecurity%2BFeatures/7-Series-Turkish-Lira/200%2BTurkish%2BLira" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Central de Turquía · edición y elementos de seguridad</a></li>
+            <li><a href="https://tcmb.gov.tr/wps/wcm/connect/EN/TCMB%2BEN/Main%2BMenu/Announcements/Press%2BReleases/2023/ANO2023-50" target="_blank" rel="noopener noreferrer" data-copy="source2">tcmb.gov.tr</a></li>
+            <li><a href="https://sanalmuze.tcmb.gov.tr/wps/wcm/connect/sanalmuze/tr/main%2Bmenu/Emisyon%2BGruplari/emisyon%2Bgruplari/" target="_blank" rel="noopener noreferrer" data-copy="source3">sanalmuze.tcmb.gov.tr</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -178,13 +188,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

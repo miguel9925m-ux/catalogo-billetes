@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>20 dinares serbios · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-008" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -45,7 +45,14 @@
       </header>
 
       <div class="photo-controls">
-        <a class="reference-link" href="https://nbs.rs/en/novac-i-placanja/novcanice/index.html" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver referencia de la edición</a>
+        <div class="view-switch" role="group" aria-label="Tipo de imagen" data-label="photoType">
+          <button type="button" data-photo-mode="original" aria-pressed="true" data-copy="collectionPhoto">Ejemplar de la colección</button>
+          <button type="button" data-photo-mode="reference" aria-pressed="false" data-copy="referencePhoto">Muestra didáctica</button>
+        </div>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://nbs.rs/en/novac-i-placanja/novcanice/index.html" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
       </div>
 
       <div class="gallery">
@@ -53,14 +60,15 @@
           <button class="photo-button" type="button" data-photo="front" aria-haspopup="dialog"
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
-              <img src="../../assets/bil-008-anverso.jpg" width="1050" height="485"
-                alt="Petar II Petrović-Njegoš y el monasterio de Cetinje." data-alt="frontAlt">
+              <img src="../../assets/bil-008-anverso.jpg" data-reference="https://nbs.rs/export/sites/NBS_site/gallery/novac/opticajni-novac/20_lice.jpg" width="1050" height="485"
+                alt="Petar II Petrović-Njegoš y el monasterio de Cetinje." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">Petar II Petrović-Njegoš y el monasterio de Cetinje.</span>
           </figcaption>
         </figure>
@@ -68,15 +76,16 @@
           <button class="photo-button" type="button" data-photo="back" aria-haspopup="dialog"
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
-              <img src="../../assets/bil-008-reverso.jpg" width="490" height="1050"
-                alt="Njegoš sentado, cordillera de Komovi y miniatura del primer Octoecos eslavo impreso en Cetiña en 1494. Escudo de Serbia." data-alt="backAlt">
+              <img src="../../assets/bil-008-reverso.jpg" data-reference="https://nbs.rs/export/sites/NBS_site/gallery/novac/opticajni-novac/20_nalicje.jpg" width="490" height="1050"
+                alt="Njegoš sentado, el macizo de Komovi, una miniatura del Octoecos impreso en Cetiña en 1494 y el escudo de Serbia." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
-            <span data-copy="backCaption">Njegoš sentado, cordillera de Komovi y miniatura del primer Octoecos eslavo impreso en Cetiña en 1494. Escudo de Serbia.</span>
+            <span class="face-photo-kind" hidden></span>
+            <span data-copy="backCaption">Njegoš sentado, el macizo de Komovi, una miniatura del Octoecos impreso en Cetiña en 1494 y el escudo de Serbia.</span>
           </figcaption>
         </figure>
       </div>
@@ -134,7 +143,7 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://nbs.rs/en/novac-i-placanja/novcanice/index.html" target="_blank" rel="noopener noreferrer" data-copy="source1">nbs.rs</a></li>
+            <li><a href="https://nbs.rs/en/novac-i-placanja/novcanice/index.html" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Nacional de Serbia</a></li>
             <li><a href="https://nbs.rs/en/scripts/showcontent/index.html?id=6476&amp;konverzija=no" target="_blank" rel="noopener noreferrer" data-copy="source2">nbs.rs</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
@@ -178,13 +187,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

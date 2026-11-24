@@ -90,7 +90,9 @@ h1 { margin: 0; font-size: clamp(2.45rem, 6vw, 4.65rem); line-height: .99; lette
   color: var(--green); background: transparent; font-size: .9rem; font-weight: 650;
 }
 .view-switch button[aria-pressed="true"] { background: var(--deep); color: #fff; }
-#reference-credit { margin: 0; font-size: .875rem; }
+#reference-credit, #photo-status { margin: 0; color: var(--muted); font-size: .875rem; }
+.face-photo-kind { font-size: .8125rem; color: var(--muted); }
+.face-photo-kind:not([hidden]) { display: block; }
 .photo-window { display: block; position: relative; width: 100%; aspect-ratio: 2 / 1; overflow: hidden; }
 .photo-window img { position: absolute; width: 100%; height: auto; max-width: none; left: 0; top: 0; }
 .specimen-mark {
@@ -239,12 +241,12 @@ dialog::backdrop { background: #14251fd2; }
 .catalogue-filter { width: min(100%, 17rem); }
 .catalogue-filter label { display: block; margin-bottom: .32rem; font-size: .875rem; font-weight: 650; }
 #catalogue-count { color: var(--muted); min-height: 1.5rem; }
-.reference-link {
+.reference-sheet {
   display: inline-flex; align-items: center; min-height: 2.75rem; padding: .32rem .75rem;
   border: 1px solid var(--line); border-radius: .35rem; background: var(--soft);
   color: var(--green); font-weight: 650;
 }
-.reference-link:hover { background: #e2ecdf; }
+.reference-sheet:hover { background: #e2ecdf; }
 .rate-attribution p { margin: 0; }
 #rate-status { font-weight: 650; }
 .historical-panel p { margin: 0; max-width: 58ch; }

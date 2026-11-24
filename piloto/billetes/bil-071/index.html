@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>100 dólares jamaicanos · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-071" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -45,7 +45,12 @@
       </header>
 
       <div class="photo-controls">
-        <a class="reference-link" href="https://boj.org.jm/core-functions/currency/bank-notes/" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver referencia de la edición</a>
+        <button type="button" class="reference-sheet" id="reference-sheet"
+          data-image="https://e2gobqetsqs.exactdn.com/wp-content/uploads/2023/05/100-note_Page_2.png?strip=all" aria-haspopup="dialog" data-copy="referenceSheet">Ver anverso y reverso de referencia</button>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://boj.org.jm/core-functions/currency/bank-notes/" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
       </div>
 
       <div class="gallery">
@@ -54,13 +59,14 @@
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
               <img src="../../assets/bil-071-anverso.jpg" width="1050" height="788"
-                alt="Marcus Garvey, marca Jamaica 60 y ventana de seguridad." data-alt="frontAlt">
+                alt="Marcus Garvey, marca Jamaica 60 y ventana de seguridad." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">Marcus Garvey, marca Jamaica 60 y ventana de seguridad.</span>
           </figcaption>
         </figure>
@@ -69,13 +75,14 @@
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
               <img src="../../assets/bil-071-reverso.jpg" width="1050" height="788"
-                alt="Cascadas Dunn’s River, cerca de Ocho Ríos." data-alt="backAlt">
+                alt="Cascadas Dunn’s River, cerca de Ocho Ríos." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="backCaption">Cascadas Dunn’s River, cerca de Ocho Ríos.</span>
           </figcaption>
         </figure>
@@ -134,7 +141,7 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://boj.org.jm/core-functions/currency/bank-notes/" target="_blank" rel="noopener noreferrer" data-copy="source1">boj.org.jm</a></li>
+            <li><a href="https://boj.org.jm/core-functions/currency/bank-notes/" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco de Jamaica · Anverso y reverso de los 100 dólares de polímero</a></li>
             <li><a href="https://boj.org.jm/removal-of-jamaica-60th-independence-anniversary-logo-from-polymer-notes/" target="_blank" rel="noopener noreferrer" data-copy="source2">boj.org.jm</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
@@ -178,13 +185,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

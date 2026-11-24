@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>1.000 pesos argentinos · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
 </head>
 <body data-page="note" data-note-id="BIL-025" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -45,7 +45,12 @@
       </header>
 
       <div class="photo-controls">
-        <a class="reference-link" href="https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A7808.pdf" target="_blank" rel="noopener noreferrer" data-copy="referenceLink">Ver referencia de la edición</a>
+        <button type="button" class="reference-sheet" id="reference-sheet"
+          data-image="https://www.bcra.gob.ar/archivos/Imagenes/Noticias/medidas-seguridad-billete-1000-JSM-web.jpg" aria-haspopup="dialog" data-copy="referenceSheet">Ver anverso y reverso de referencia</button>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://www.bcra.gob.ar/noticias/el-bcra-lanza-la-nueva-familia-de-billetes-heroinas-y-heroes-de-la-patria-con-el-billete-de-1000-que-homenajea-al-general-san-martin/" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
       </div>
 
       <div class="gallery">
@@ -54,13 +59,14 @@
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
               <img src="../../assets/bil-025-anverso.jpg" width="1050" height="441"
-                alt="José de San Martín en uniforme, acompañado de una llama votiva impresa con tinta de variabilidad óptica." data-alt="frontAlt">
+                alt="José de San Martín en uniforme, acompañado de una llama votiva impresa con tinta de variabilidad óptica." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="front">Anverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="frontCaption">José de San Martín en uniforme, acompañado de una llama votiva impresa con tinta de variabilidad óptica.</span>
           </figcaption>
         </figure>
@@ -69,13 +75,14 @@
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
               <img src="../../assets/bil-025-reverso.jpg" width="1050" height="455"
-                alt="Cruce del ejército de San Martín. La leyenda de la escena incluye el 17 de enero de 1817." data-alt="backAlt">
+                alt="Cruce del ejército de San Martín. La leyenda de la escena incluye el 17 de enero de 1817." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
             <span class="photo-zoom-icon" aria-hidden="true"><span></span></span>
           </button>
           <figcaption>
             <span class="face-label" data-copy="back">Reverso</span>
+            <span class="face-photo-kind" hidden></span>
             <span data-copy="backCaption">Cruce del ejército de San Martín. La leyenda de la escena incluye el 17 de enero de 1817.</span>
           </figcaption>
         </figure>
@@ -84,7 +91,7 @@
       <div class="description-grid">
         <section class="story" aria-labelledby="story-title">
           <h2 id="story-title" data-copy="storyTitle">Historia del billete</h2>
-          <p data-copy="story">El Banco Central retomó a San Martín para la familia de billetes dedicada a las figuras de la independencia. La travesía de los Andes ocupa el reverso y recuerda la campaña libertadora de 1817.</p>
+          <p data-copy="story">El Banco Central retomó a San Martín para la familia «Heroínas y héroes de la Patria». La travesía de los Andes ocupa el reverso y recuerda la campaña libertadora de 1817.</p>
           <div class="look">
             <h3 data-copy="lookTitle">Fecha y edición</h3>
             <p data-copy="look">Sin año de edición visible</p>
@@ -134,8 +141,9 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A7808.pdf" target="_blank" rel="noopener noreferrer" data-copy="source1">bcra.gob.ar</a></li>
-            <li><a href="https://www.bcra.gob.ar/noticias/el-bcra-lanza-la-nueva-familia-de-billetes-heroinas-y-heroes-de-la-patria-con-el-billete-de-1000-que-homenajea-al-general-san-martin/" target="_blank" rel="noopener noreferrer" data-copy="source2">bcra.gob.ar</a></li>
+            <li><a href="https://www.bcra.gob.ar/billete-de-1000-jose-de-san-martin/" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Central de la República Argentina · 1.000 pesos de San Martín</a></li>
+            <li><a href="https://www.bcra.gob.ar/noticias/el-bcra-lanza-la-nueva-familia-de-billetes-heroinas-y-heroes-de-la-patria-con-el-billete-de-1000-que-homenajea-al-general-san-martin/" target="_blank" rel="noopener noreferrer" data-copy="source2">Banco Central de la República Argentina · 1.000 pesos de San Martín</a></li>
+            <li><a href="https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A7808.pdf" target="_blank" rel="noopener noreferrer" data-copy="source3">bcra.gob.ar</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -178,13 +186,13 @@
     </div>
     <div class="image-viewport" tabindex="0" aria-label="Foto ampliada" data-label="photoArea">
       <div class="photo-window" id="viewer-frame">
-        <img id="viewer-photo" alt="">
+        <img id="viewer-photo" alt="" referrerpolicy="no-referrer">
         <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js"></script>
-  <script defer src="../../assets/map-data.js"></script>
-  <script defer src="../../assets/atlas.js"></script>
+  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
+  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>
 </html>

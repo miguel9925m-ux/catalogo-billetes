@@ -24,7 +24,13 @@
   const scaleButtons = document.querySelectorAll("[data-map-view]");
   const photos = [...document.querySelectorAll("[data-photo]")].map(button => {
     const image = button.querySelector("img");
-    return { button, image, side: button.dataset.photo, originalSrc: image.src, frame: button.querySelector(".photo-window") };
+    const side = button.dataset.photo;
+    const original = { ...note.images.original[side], src: image.src };
+    return {
+      button, image, side, original, active: original,
+      frame: button.querySelector(".photo-window"),
+      kind: button.closest("figure").querySelector(".face-photo-kind"),
+    };
   });
 
   const requestedCountry = new URLSearchParams(location.search).get("pais");
@@ -32,8 +38,9 @@
   let country = countries.has(requestedCountry) ? requestedCountry : "";
   let language = "es";
   let words;
-  let photoMode = "original";
-  let photoSide = "front";
+  let photoRequest = 0;
+  let photoStatus = "";
+  let viewerCopy = null;
   let mapView = "close";
   let zoom = 1;
   let rates = atlasInitialRates;
@@ -123,7 +130,12 @@
       updateLocation();
     }
     updateTitle();
-    if (viewer) byId("viewer-title").textContent = words[photoSide];
+    for (const photo of photos) labelPhoto(photo);
+    setPhotoStatus(photoStatus);
+    if (viewerCopy) {
+      byId("viewer-title").textContent = words[viewerCopy.title];
+      viewerPhoto.alt = viewerCopy.photo ? photoAlt(viewerCopy.photo) : words.referenceSheet;
+    }
     if (currency) updateConversion();
     if (map?.open) drawMap();
   }
@@ -157,22 +169,87 @@
       : "none";
   }
 
-  function showPhotos(mode) {
-    photoMode = mode;
-    const reference = mode === "reference";
+  function photoAlt({ side, active }) {
+    const description = words[side + "ReferenceAlt"] ?? words[side + "Alt"];
+    return active.reference ? words.referencePhoto + ". " + description : words[side + "Alt"];
+  }
+
+  function labelPhoto(photo) {
+    photo.image.alt = photoAlt(photo);
+    photo.kind.textContent = photo.active.reference ? words.referencePhoto : words.collectionPhoto;
+  }
+
+  function displayPhoto(photo, definition, showKind) {
+    photo.active = definition;
+    photo.kind.hidden = !showKind;
+    labelPhoto(photo);
+    fitPhoto(photo.frame, photo.image, definition);
+    photo.frame.querySelector(".specimen-mark").hidden = !definition.specimen;
+    if (photo.image.src !== definition.src) photo.image.src = definition.src;
+  }
+
+  function setPhotoStatus(key) {
+    photoStatus = key;
+    const status = byId("photo-status");
+    if (!status) return;
+    status.hidden = !key;
+    status.textContent = key ? words[key] : "";
+  }
+
+  async function loadPhoto(src) {
+    const image = new Image();
+    image.referrerPolicy = "no-referrer";
+    image.src = src;
+    let timer;
+    try {
+      await Promise.race([
+        image.decode(),
+        new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error("Photo loading timed out")), 15000);
+        }),
+      ]);
+      return { src: image.src, width: image.naturalWidth, height: image.naturalHeight, reference: true };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function showPhotos(mode) {
+    const request = ++photoRequest;
     const credit = byId("reference-credit");
-    if (credit) credit.hidden = !reference;
+    let results = [];
+    if (mode === "reference") {
+      setPhotoStatus("referenceLoading");
+      const alternates = photos.map(({ image, side }) =>
+        image.dataset.reference
+          ? loadPhoto(image.dataset.reference).then(photo => ({
+              ...photo, specimen: note.images.reference[side].specimen,
+            }))
+          : null);
+      results = await Promise.allSettled(alternates);
+      if (request !== photoRequest) return;
+    }
+    const hasReference = results.some(result => result.value?.reference);
+    if (credit) credit.hidden = !hasReference;
     for (const button of photoModes) {
-      button.setAttribute("aria-pressed", String(button.dataset.photoMode === mode));
+      button.setAttribute("aria-pressed", String(
+        button.dataset.photoMode === (hasReference ? "reference" : "original")
+      ));
     }
-    for (const { image, frame, side, originalSrc } of photos) {
-      image.dataset.alt = side + (reference ? "ReferenceAlt" : "Alt");
-      image.alt = words[image.dataset.alt];
-      fitPhoto(frame, image, note.images[mode][side]);
-      frame.querySelector(".specimen-mark").hidden = !reference;
-      const url = reference ? new URL(image.dataset.reference, location.href).href : originalSrc;
-      if (image.src !== url) image.src = url;
-    }
+    photos.forEach((photo, index) => displayPhoto(photo, results[index]?.value ?? photo.original, hasReference));
+    setPhotoStatus(results.some(result => result.status === "rejected") ? "referenceUnavailable" : "");
+  }
+
+  function openViewer(definition, title, photo = null) {
+    viewerCopy = { title, photo };
+    viewerPhoto.src = definition.src;
+    viewerPhoto.alt = photo ? photoAlt(photo) : words.referenceSheet;
+    fitPhoto(viewerFrame, viewerPhoto, definition);
+    viewerFrame.querySelector(".specimen-mark").hidden = !definition.specimen;
+    byId("viewer-title").textContent = words[title];
+    viewer.showModal();
+    applyZoom(1);
+    viewport.scrollTo(0, 0);
   }
 
   function validRateSnapshot(snapshot) {
@@ -320,7 +397,7 @@
       line(ctx, [0, y], [width, y]);
     }
 
-    for (const code of definition.shapes) {
+    for (const code of view.land) {
       const shape = atlasMap[code];
       const polygons = shape.type === "Polygon" ? [shape.coordinates] : shape.coordinates;
       ctx.beginPath();
@@ -340,14 +417,24 @@
     }
 
     const labelSize = width < 430 ? 12 : 16;
+    const anchor = project(view.anchor);
+    const label = project(view.label);
+    const city = project(definition.capital);
+    const cityLabel = view.capitalLabel ? project(view.capitalLabel) : null;
+    const title = words.mapLabel ?? words.countryName;
     ctx.font = "600 " + labelSize + "px Segoe UI, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#3e5d4d";
-    for (const [label, lon, lat] of view.labels) ctx.fillText(words[label], ...project([lon, lat]));
+    const reserved = [
+      labelBox(ctx, title, label, labelSize + 16, 20),
+      [city[0] - 7, city[1] - 7, city[0] + 7, city[1] + 7],
+    ];
+    if (cityLabel) reserved.push(labelBox(ctx, words.mapCapital, cityLabel, labelSize + 10, 20));
+    const labels = drawNeighbors(ctx, view, project, width, height, labelSize, reserved);
+    canvas.setAttribute("aria-label", labels.length
+      ? words.mapAlt + ". " + words.mapNearby + " " + labels.join(", ") + "."
+      : words.mapAlt);
 
-    const anchor = project(view.anchor);
-    const label = project(view.label);
     if (view.locator) {
       ctx.beginPath();
       ctx.arc(...anchor, 7, 0, Math.PI * 2);
@@ -360,18 +447,58 @@
     ctx.strokeStyle = "#1c4f38";
     ctx.lineWidth = 1.3;
     line(ctx, anchor, label);
-    drawLabel(ctx, words.mapLabel ?? words.countryName, label, labelSize + 10, "#163c2d", "#ffffff");
+    drawLabel(ctx, title, label, labelSize + 10, "#163c2d", "#ffffff");
 
-    if (view.capitalLabel) {
-      const city = project(definition.capital);
-      const text = project(view.capitalLabel);
+    if (cityLabel) {
       ctx.strokeStyle = "#75432b";
       ctx.lineWidth = 1.15;
-      line(ctx, city, text);
+      line(ctx, city, cityLabel);
       point(ctx, city, 4.5, "#fffdfa");
       point(ctx, city, 2.8, "#a55021");
-      drawLabel(ctx, words.mapCapital, text, labelSize + 4, "#fffdf5", "#75432b");
+      drawLabel(ctx, words.mapCapital, cityLabel, labelSize + 4, "#fffdf5", "#75432b");
     }
+  }
+
+  function labelBox(ctx, label, [x, y], height, padding) {
+    const width = ctx.measureText(label).width + padding;
+    return [x - width / 2, y - height / 2, x + width / 2, y + height / 2];
+  }
+
+  function drawNeighbors(ctx, view, project, width, height, labelSize, reserved) {
+    const names = new Intl.DisplayNames(language, { type: "region" });
+    const localized = {
+      US: language === "es" ? "Estados Unidos" : "United States",
+      BA: language === "es" ? "Bosnia y Herzegovina" : "Bosnia and Herzegovina",
+    };
+    const labels = [];
+    const font = "600 " + (labelSize - 1) + "px Segoe UI, sans-serif";
+    ctx.save();
+    ctx.font = font;
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#f8faf4";
+    ctx.fillStyle = "#2b4b3e";
+
+    const choices = [
+      ...view.labels.map(([key, x, y]) => [words[key], [[x, y]]]),
+      ...view.neighbors.map(([region, points]) => [localized[region] ?? names.of(region), points]),
+    ];
+    for (const [name, points] of choices) {
+      if (labels.length >= (width < 430 ? 7 : 10)) break;
+      for (const point of points) {
+        const position = project(point);
+        const [left, top, right, bottom] = labelBox(ctx, name, position, labelSize + 7, 9);
+        if (left < 3 || top < 3 || right > width - 3 || bottom > height - 3) continue;
+        if (reserved.some(([l, t, r, b]) => left < r && l < right && top < b && t < bottom)) continue;
+        ctx.strokeText(name, ...position);
+        ctx.fillText(name, ...position);
+        reserved.push([left, top, right, bottom]);
+        labels.push(name);
+        break;
+      }
+    }
+    ctx.restore();
+    return labels;
   }
 
   function line(ctx, from, to) {
@@ -438,23 +565,34 @@
     showPhotos("original");
     byId("find-country").addEventListener("click", () => {
       map.showModal();
-      setMapView("close");
+      setMapView(note.map.defaultView);
     });
     for (const button of scaleButtons) {
       button.addEventListener("click", () => setMapView(button.dataset.mapView));
     }
     window.addEventListener("resize", () => { if (map.open) drawMap(); });
-    for (const { button, side, image } of photos) {
-      button.addEventListener("click", () => {
-        photoSide = side;
-        viewerPhoto.src = image.src;
-        viewerPhoto.alt = image.alt;
-        fitPhoto(viewerFrame, viewerPhoto, note.images[photoMode][side]);
-        viewerFrame.querySelector(".specimen-mark").hidden = photoMode !== "reference";
-        byId("viewer-title").textContent = words[side];
-        viewer.showModal();
-        applyZoom(1);
-        viewport.scrollTo(0, 0);
+    for (const photo of photos) {
+      photo.button.addEventListener("click", () => {
+        if (photoStatus === "referenceLoading" && byId("reference-sheet")) {
+          ++photoRequest;
+          setPhotoStatus("");
+        }
+        openViewer(photo.active, photo.side, photo);
+      });
+    }
+    const sheet = byId("reference-sheet");
+    if (sheet) {
+      sheet.addEventListener("click", async () => {
+        const request = ++photoRequest;
+        setPhotoStatus("referenceLoading");
+        try {
+          const image = await loadPhoto(sheet.dataset.image);
+          if (request !== photoRequest) return;
+          setPhotoStatus("");
+          openViewer(image, "referenceSheet");
+        } catch {
+          if (request === photoRequest) setPhotoStatus("referenceUnavailable");
+        }
       });
     }
     byId("zoom-out").addEventListener("click", () => applyZoom(Math.max(1, zoom - 0.5)));

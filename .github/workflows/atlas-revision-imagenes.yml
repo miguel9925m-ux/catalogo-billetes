@@ -1,58 +1,35 @@
-name: Verificar las dos caras del billete de cinco dólares EC
+name: Verificar las fotografías licenciadas del Caribe Oriental
 on:
   push:
     branches: [atlas-revision-imagenes]
 permissions:
   contents: read
 jobs:
-  material:
+  muestras:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Leer las imágenes y el material del emisor
+      - name: Verificar frente y reverso publicados por su fotógrafo
         run: |
-          python3 -m pip install --quiet Pillow pymupdf
+          python3 -m pip install --quiet Pillow
           python3 - <<'PY'
           import base64, hashlib, json, urllib.request
-          import fitz
-          from PIL import Image
           from io import BytesIO
-
-          def request(url):
-              headers={'User-Agent':'Mozilla/5.0','Accept':'image/avif,image/webp,image/png,image/svg+xml,image/*,*/*;q=0.8'}
-              return urllib.request.urlopen(urllib.request.Request(url, headers=headers),timeout=17).read()
-          def export(label,image):
-              image.thumbnail((940,1020))
-              result=BytesIO()
-              image.convert('RGB').save(result,'JPEG',quality=84,optimize=True)
-              data=base64.b64encode(result.getvalue()).decode('ascii')
-              for i in range(0,len(data),5200):
-                  print('ATLAS_EXPORT',label,data[i:i+5200])
-          template='https://banknotenews.com/wp-content/uploads/2021/07/East_Caribbean_States_ECCB_5_dollars_2021.05.00_B240a_PNL_CU_511155_{}.jpg'
-          for side,suffix in [('front','f'),('back','r')]:
-              try:
-                  url=template.format(suffix)
-                  data=request(url)
-                  image=Image.open(BytesIO(data))
-                  width,height=image.size
-                  print('ECCB_IMAGE',json.dumps({'side':side,'url':url,'width':width,'height':height,'sha256':hashlib.sha256(data).hexdigest()}))
-                  export('eccb-'+side,image)
-              except Exception as error:
-                  print('ERROR',side,error)
-          for title,url in [
-              ('annual','https://cdn.eccb-centralbank.org/documents/2023-07-03-15-59-20-2020-2021-Annual-Report-2.pdf'),
-              ('finance','https://finance.gov.vc/finance/images/PDF/Presentation_on_EC_Polymer_Notes.pdf')
-          ]:
-              try:
-                  with fitz.open(stream=request(url),filetype='pdf') as doc:
-                      if title=='finance':
-                          idx=6
-                      else:
-                          idx=next(i for i,page in enumerate(doc) if 'family of ec polymer notes' in ' '.join(page.get_text().lower().split()))
-                      page=doc[idx]
-                      print('ECCB_PAGE',title,idx+1,list(page.rect))
-                      png=page.get_pixmap(matrix=fitz.Matrix(1.55,1.55),alpha=False).tobytes('png')
-                      export('eccb-'+title,Image.open(BytesIO(png)))
-              except Exception as error:
-                  print('ERROR',title,error)
+          from PIL import Image
+          sources = {
+              "front":"https://en.numista.com/catalogue/photos/oeco/660bb7a46367d1.31662060-original.jpg",
+              "back":"https://en.numista.com/catalogue/photos/oeco/660bb7a7238d00.45183771-original.jpg",
+          }
+          for side,url in sources.items():
+              request=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'image/jpeg,image/*;q=0.8'})
+              with urllib.request.urlopen(request,timeout=20) as response:
+                  raw=response.read()
+              with Image.open(BytesIO(raw)) as photo:
+                  assert photo.format == 'JPEG'
+                  width,height=photo.size
+                  photo.verify()
+              print('APPROVED_FILE',json.dumps({'side':side,'width':width,'height':height,'sha256':hashlib.sha256(raw).hexdigest()}))
+              encoded=base64.b64encode(raw).decode('ascii')
+              for offset in range(0,len(encoded),5200):
+                  print('ATLAS_EXPORT','licensed-'+side,encoded[offset:offset+5200])
           PY

@@ -44,14 +44,23 @@
         </button>
       </header>
 
-      
+      <div class="photo-controls">
+        <div class="view-switch" role="group" aria-label="Tipo de imagen" data-label="photoType">
+          <button type="button" data-photo-mode="original" aria-pressed="true" data-copy="collectionPhoto">Ejemplar de la colección</button>
+          <button type="button" data-photo-mode="reference" aria-pressed="false" data-copy="referencePhoto">Muestra didáctica</button>
+        </div>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://commons.wikimedia.org/wiki/File:200-uah-2020-1.png" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
+      </div>
 
       <div class="gallery">
         <figure>
           <button class="photo-button" type="button" data-photo="front" aria-haspopup="dialog"
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
-              <img src="../../assets/bil-022-anverso.jpg" width="1050" height="534"
+              <img src="../../assets/bil-022-anverso.jpg" data-reference="https://upload.wikimedia.org/wikipedia/commons/b/b6/200-uah-2020-1.png?utm_campaign=index&amp;utm_content=original&amp;utm_source=commons.wikimedia.org" width="1050" height="534"
                 alt="Lesia Ukrainka, flor y un fragmento de su obra." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
@@ -67,7 +76,7 @@
           <button class="photo-button" type="button" data-photo="back" aria-haspopup="dialog"
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
-              <img src="../../assets/bil-022-reverso.jpg" width="1050" height="519"
+              <img src="../../assets/bil-022-reverso.jpg" data-reference="https://upload.wikimedia.org/wikipedia/commons/9/9d/200-uah-2020-2.png" width="1050" height="519"
                 alt="Torre de entrada del castillo de Lubart, en Lutsk." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
@@ -135,7 +144,8 @@
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
             <li><a href="https://bank.gov.ua/admin_uploads/article/Banknotes-and-coins-of-Ukraine_2021_en.pdf?v=14#page=55" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Nacional de Ucrania · edición de 200 grivnas de 2021</a></li>
-            <li><a href="https://bank.gov.ua/admin_uploads/article/Banknotes-and-coins-of-Ukraine_2021_en.pdf" target="_blank" rel="noopener noreferrer" data-copy="source2">bank.gov.ua</a></li>
+            <li><a href="https://commons.wikimedia.org/wiki/File:200-uah-2020-1.png" target="_blank" rel="noopener noreferrer" data-copy="source2">Banco Nacional de Ucrania · 200 grivnas del diseño 2019</a></li>
+            <li><a href="https://bank.gov.ua/admin_uploads/article/Banknotes-and-coins-of-Ukraine_2021_en.pdf" target="_blank" rel="noopener noreferrer" data-copy="source3">bank.gov.ua</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -183,7 +193,7 @@
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js?v=4c62cf4e37cc"></script>
+  <script defer src="../../assets/pilot-data.js?v=f572aa78aad5"></script>
   <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
   <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
 </body>

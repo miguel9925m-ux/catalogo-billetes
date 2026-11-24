@@ -188,7 +188,7 @@ async function checkReference(page, profile) {
       return { src: image.src, width: image.naturalWidth };
     });
     assert.equal(shape.src, references.sheet.url, profile.id);
-    assert.ok(shape.width >= 160, profile.id);
+    assert.ok(shape.width >= 250, profile.id + " reference sheet width " + shape.width);
     await page.locator("#photo-viewer").getByRole("button", { name: "Cerrar foto", exact: true }).click();
     return 2;
   }
@@ -205,8 +205,9 @@ async function checkReference(page, profile) {
     const expected = references[side]?.url ?? references[side]?.file ?? profile.images.original[side].file;
     const actual = await face.evaluate(image => ({ src: image.src, width: image.naturalWidth, height: image.naturalHeight }));
     const matches = expected.startsWith("https://") ? actual.src === expected : new URL(actual.src).pathname.endsWith("/" + expected);
-    assert.ok(matches && actual.width >= 100 && actual.height >= 100,
-      profile.id + " " + side + " expected " + expected + " and displayed " + actual.src);
+    const minimum = profile.id === "BIL-001" ? 500 : 260;
+    assert.ok(matches && Math.max(actual.width, actual.height) >= minimum && Math.min(actual.width, actual.height) >= 70,
+      side + " expected " + expected + " and displayed " + actual.src + " (" + actual.width + " × " + actual.height + ")");
   }
   const count = Number(Boolean(references.front)) + Number(Boolean(references.back));
   await page.locator("[data-photo-mode=original]").click();
@@ -398,9 +399,14 @@ async function checkBrowser(engine, device, urls, rates) {
     await heading(page, "Catálogo de billetes");
     await checkCatalogue(page);
     await checkNewNotes(page, rates);
-    await checkExamples(page);
+    const results = await Promise.allSettled([
+      checkExamples(page),
+      device === "Pixel 7" ? checkEntireCollection(context, rates) : Promise.resolve(),
+    ]);
+    const failed = results.filter(result => result.status === "rejected");
+    for (const result of failed) console.error(result.reason);
+    assert.equal(failed.length, 0, device + " has failing checks");
     assert.deepEqual(errors, []);
-    if (device === "Pixel 7") await checkEntireCollection(context, rates);
     console.log(device + " passed catalogue navigation, both QR codes and the representative collection cases.");
   } finally {
     await browser.close();
@@ -411,10 +417,16 @@ async function checkBrowser(engine, device, urls, rates) {
   await waitForDeployment();
   const urls = await scanCodes();
   const rates = await (await read(rateUrl)).json();
-  await Promise.all([
+  const browsers = await Promise.allSettled([
     checkBrowser(chromium, "Pixel 7", urls, rates),
     checkBrowser(webkit, "iPhone 13", urls, rates),
   ]);
+  for (const result of browsers) {
+    if (result.status === "rejected") {
+      console.error(result.reason);
+      process.exitCode = 1;
+    }
+  }
 })().catch(error => {
   console.error(error);
   process.exitCode = 1;

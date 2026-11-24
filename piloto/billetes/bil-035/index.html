@@ -45,11 +45,13 @@
       </header>
 
       <div class="photo-controls">
-        <button type="button" class="reference-sheet" id="reference-sheet"
-          data-image="https://www.coinworld.com/images/default-source/news/eccb-5d-note-lead.jpg?sfvrsn=d29cbbd1_0" aria-haspopup="dialog" data-copy="referenceSheet">Ver anverso y reverso de referencia</button>
+        <div class="view-switch" role="group" aria-label="Tipo de imagen" data-label="photoType">
+          <button type="button" data-photo-mode="original" aria-pressed="true" data-copy="collectionPhoto">Ejemplar de la colección</button>
+          <button type="button" data-photo-mode="reference" aria-pressed="false" data-copy="referencePhoto">Muestra didáctica</button>
+        </div>
         <p id="photo-status" role="status" hidden></p>
         <p id="reference-credit" hidden>
-          <a href="https://www.coinworld.com/news/paper-money/eccb-completes-transition-to-polymer-with-new-5-dollar-note" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+          <a href="https://en.numista.com/catalogue/note272908.html" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
         </p>
       </div>
 
@@ -58,7 +60,7 @@
           <button class="photo-button" type="button" data-photo="front" aria-haspopup="dialog"
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
-              <img src="../../assets/bil-035-anverso.jpg" width="528" height="1050"
+              <img src="../../assets/bil-035-anverso.jpg" data-reference="../../assets/bil-035-muestra-anverso.jpg" width="528" height="1050"
                 alt="Isabel II, colibrí y motivos marinos en formato vertical." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
@@ -74,7 +76,7 @@
           <button class="photo-button" type="button" data-photo="back" aria-haspopup="dialog"
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
-              <img src="../../assets/bil-035-reverso.jpg" width="533" height="1050"
+              <img src="../../assets/bil-035-reverso.jpg" data-reference="../../assets/bil-035-muestra-reverso.jpg" width="533" height="1050"
                 alt="Cascadas Trafalgar de Dominica, Admiral’s House de Antigua y Barbuda y mapa regional." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
@@ -141,9 +143,10 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://www.coinworld.com/news/paper-money/eccb-completes-transition-to-polymer-with-new-5-dollar-note" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Central del Caribe Oriental · 5 dólares de polímero</a></li>
-            <li><a href="https://finance.gov.vc/finance/images/PDF/Presentation_on_EC_Polymer_Notes.pdf" target="_blank" rel="noopener noreferrer" data-copy="source2">finance.gov.vc</a></li>
-            <li><a href="https://cdn.eccb-centralbank.org/documents/2023-07-03-15-59-20-2020-2021-Annual-Report-2.pdf" target="_blank" rel="noopener noreferrer" data-copy="source3">cdn.eccb-centralbank.org</a></li>
+            <li><a href="https://en.numista.com/catalogue/note272908.html" target="_blank" rel="noopener noreferrer" data-copy="source1">Fotos de hex7ech · Numista · reducidas para web</a></li>
+            <li><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer" data-copy="source2">Licencia de las fotos · CC BY-NC 4.0</a></li>
+            <li><a href="https://finance.gov.vc/finance/images/PDF/Presentation_on_EC_Polymer_Notes.pdf" target="_blank" rel="noopener noreferrer" data-copy="source3">finance.gov.vc</a></li>
+            <li><a href="https://cdn.eccb-centralbank.org/documents/2023-07-03-15-59-20-2020-2021-Annual-Report-2.pdf" target="_blank" rel="noopener noreferrer" data-copy="source4">cdn.eccb-centralbank.org</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -191,8 +194,8 @@
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js?v=9a8314e7dd16"></script>
+  <script defer src="../../assets/pilot-data.js?v=52093f5278a3"></script>
   <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
-  <script defer src="../../assets/atlas.js?v=f1368c406d8d"></script>
+  <script defer src="../../assets/atlas.js?v=81277393b927"></script>
 </body>
 </html>

@@ -175,44 +175,98 @@ async function checkNewNotes(page, rates) {
   }
 }
 
+function referenceURL(approved) {
+  return new URL(approved.url ?? "assets/" + approved.file, base).href;
+}
+
+async function verifySample(page, image, approved, capture, label) {
+  await image.evaluate(el => el.decode());
+  const actual = await image.evaluate(el => ({
+    url: el.src, width: el.naturalWidth, height: el.naturalHeight,
+  }));
+  const intended = referenceURL(approved);
+  assert.equal(actual.url, intended, label + " returned to the collection photo");
+  assert.equal(actual.width, approved.width, label + " width");
+  assert.equal(actual.height, approved.height, label + " height");
+  assert.ok(approved.sha256, label + " must have a visually approved source");
+  const response = await capture.get(intended);
+  assert.ok(response, label + " must return image data");
+  const fileDigest = createHash("sha256").update(response.bytes).digest("hex");
+  if (fileDigest !== approved.sha256) {
+    assert.ok(approved.signature, label + " returned a different image file");
+    const observed = await page.evaluate(async src => {
+      const bitmap = new Image();
+      bitmap.src = src;
+      await bitmap.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = 12;
+      canvas.height = 8;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, 12, 8);
+      ctx.drawImage(bitmap, 0, 0, 12, 8);
+      const values = ctx.getImageData(0, 0, 12, 8).data;
+      let rgb = "";
+      for (let i = 0; i < values.length; i += 4) {
+        rgb += String.fromCharCode(values[i], values[i + 1], values[i + 2]);
+      }
+      return btoa(rgb);
+    }, "data:" + response.type + ";base64," + response.bytes.toString("base64"));
+    const expected = Buffer.from(approved.signature, "base64");
+    const rendered = Buffer.from(observed, "base64");
+    assert.equal(rendered.length, expected.length);
+    const variation = rendered.reduce((sum, value, i) => sum + Math.abs(value - expected[i]), 0) / expected.length;
+    // Different browser codecs can produce small color differences.
+    assert.ok(variation <= 7, label + " pixels differ from the approved image (" + variation.toFixed(1) + ")");
+  }
+  return fileDigest;
+}
+
 async function checkReference(page, profile) {
   const references = profile.images.reference;
   assert.equal(await page.locator(".photo-controls a").count(), references ? 1 : 0, profile.id);
   if (!references) return 0;
 
-  if (references.sheet) {
-    await page.locator("#reference-sheet").click();
-    await page.locator("#photo-viewer[open]").waitFor();
-    const shape = await page.locator("#viewer-photo").evaluate(async image => {
-      await image.decode();
-      return { src: image.src, width: image.naturalWidth };
-    });
-    assert.equal(shape.src, references.sheet.url, profile.id);
-    assert.ok(shape.width >= 250, profile.id + " reference sheet width " + shape.width);
-    await page.locator("#photo-viewer").getByRole("button", { name: "Cerrar foto", exact: true }).click();
-    return 2;
-  }
+  const capture = new Map();
+  const urls = new Set(Object.values(references).map(referenceURL));
+  const receive = response => {
+    let request = response.request();
+    while (request.redirectedFrom()) request = request.redirectedFrom();
+    if (!urls.has(request.url()) || !response.ok() || capture.has(request.url())) return;
+    capture.set(request.url(), response.body().then(bytes => ({
+      bytes, type: response.headers()["content-type"]?.split(";")[0] || "image/jpeg",
+    })).catch(() => null));
+  };
+  page.on("response", receive);
+  try {
+    if (references.sheet) {
+      await page.locator("#reference-sheet").click();
+      await page.locator("#photo-viewer[open]").waitFor();
+      await verifySample(page, page.locator("#viewer-photo"), references.sheet, capture, "both faces");
+      await page.locator("#photo-viewer").getByRole("button", { name: "Cerrar foto", exact: true }).click();
+      return 2;
+    }
 
-  const referenceButton = page.locator("[data-photo-mode=reference]");
-  await referenceButton.click();
-  await page.waitForFunction(() =>
-    document.querySelector("[data-photo-mode=reference]").getAttribute("aria-pressed") === "true" ||
-    (document.querySelector("#photo-status").textContent && !document.querySelector("#photo-status").textContent.includes("Cargando"))
-  );
-  for (const side of ["front", "back"]) {
-    const face = page.locator('[data-photo="' + side + '"] img');
-    await face.evaluate(image => image.decode());
-    const expected = references[side]?.url ?? references[side]?.file ?? profile.images.original[side].file;
-    const actual = await face.evaluate(image => ({ src: image.src, width: image.naturalWidth, height: image.naturalHeight }));
-    const matches = expected.startsWith("https://") ? actual.src === expected : new URL(actual.src).pathname.endsWith("/" + expected);
-    const minimum = profile.id === "BIL-001" ? 500 : 256;
-    assert.ok(matches && Math.max(actual.width, actual.height) >= minimum && Math.min(actual.width, actual.height) >= 70,
-      side + " expected " + expected + " and displayed " + actual.src + " (" + actual.width + " × " + actual.height + ")");
+    const referenceButton = page.locator("[data-photo-mode=reference]");
+    await referenceButton.click();
+    await page.waitForFunction(() =>
+      !document.querySelector("#photo-status").textContent.startsWith("Cargando"));
+    const signatures = [];
+    for (const side of ["front", "back"]) {
+      const face = page.locator('[data-photo="' + side + '"] img');
+      if (references[side]) {
+        signatures.push(await verifySample(page, face, references[side], capture, side));
+      } else {
+        assert.ok((await face.getAttribute("src")).endsWith("/" + profile.images.original[side].file));
+      }
+    }
+    assert.equal(new Set(signatures).size, signatures.length, "The same image was used for both faces");
+    await page.locator("[data-photo-mode=original]").click();
+    assert.equal(await referenceButton.getAttribute("aria-pressed"), "false", profile.id);
+    return signatures.length;
+  } finally {
+    page.off("response", receive);
   }
-  const count = Number(Boolean(references.front)) + Number(Boolean(references.back));
-  await page.locator("[data-photo-mode=original]").click();
-  assert.equal(await referenceButton.getAttribute("aria-pressed"), "false", profile.id);
-  return count;
 }
 
 async function checkExamples(page) {
@@ -225,10 +279,30 @@ async function checkExamples(page) {
   await page.getByRole("button", { name: "Ampliar reverso", exact: true }).click();
   const enlarged = page.locator("#viewer-photo");
   await enlarged.evaluate(image => image.decode());
-  assert.equal(await enlarged.getAttribute("src"), profile.images.reference.back.url);
+  assert.equal(await enlarged.getAttribute("src"), referenceURL(profile.images.reference.back));
   await page.getByRole("button", { name: "Ampliar foto", exact: true }).click();
   assert.equal(await page.locator("#zoom-value").textContent(), "150%");
   await page.getByRole("button", { name: "Cerrar foto", exact: true }).click();
+
+  const referenceURLs = new Set(Object.values(profile.images.reference).map(referenceURL));
+  const matchesSample = url => referenceURLs.has(url.href);
+  const placeholder = new PNG({ width: 1280, height: 720 });
+  placeholder.data.fill(65);
+  const unexpectedArtwork = PNG.sync.write(placeholder);
+  await page.route(matchesSample, route => route.fulfill({ contentType: "image/png", body: unexpectedArtwork }));
+  try {
+    await page.reload();
+    await ref.click();
+    await page.waitForFunction(() => document.querySelector("#photo-status").textContent.includes("no pudo cargarse"));
+    assert.equal(await ref.getAttribute("aria-pressed"), "false");
+    for (const side of ["front", "back"]) {
+      const visible = page.locator('[data-photo="' + side + '"] img');
+      assert.ok((await visible.getAttribute("src")).endsWith("/" + profile.images.original[side].file));
+    }
+    console.log("A replacement graphic at the same URLs was rejected and both collection photos remained visible.");
+  } finally {
+    await page.unroute(matchesSample);
+  }
 
   await enter(page, base + "billetes/bil-007/?lang=es", "50 dinares serbios");
   await page.getByRole("button", { name: "Ubicar Serbia", exact: true }).click();

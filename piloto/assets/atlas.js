@@ -196,7 +196,7 @@
     status.textContent = key ? words[key] : "";
   }
 
-  async function loadPhoto(src) {
+  async function loadPhoto(src, approved) {
     const image = new Image();
     image.referrerPolicy = "no-referrer";
     image.src = src;
@@ -208,7 +208,12 @@
           timer = setTimeout(() => reject(new Error("Photo loading timed out")), 15000);
         }),
       ]);
-      return { src: image.src, width: image.naturalWidth, height: image.naturalHeight, reference: true };
+      const width = image.naturalWidth;
+      const height = image.naturalHeight;
+      if (approved.width && approved.height && (width !== approved.width || height !== approved.height)) {
+        throw new Error("The reference image dimensions changed");
+      }
+      return { src: image.src, width, height, reference: true, specimen: approved.specimen };
     } finally {
       clearTimeout(timer);
     }
@@ -222,9 +227,7 @@
       setPhotoStatus("referenceLoading");
       const alternates = photos.map(({ image, side }) =>
         image.dataset.reference
-          ? loadPhoto(image.dataset.reference).then(photo => ({
-              ...photo, specimen: note.images.reference[side].specimen,
-            }))
+          ? loadPhoto(image.dataset.reference, note.images.reference[side])
           : null);
       results = await Promise.allSettled(alternates);
       if (request !== photoRequest) return;
@@ -586,7 +589,7 @@
         const request = ++photoRequest;
         setPhotoStatus("referenceLoading");
         try {
-          const image = await loadPhoto(sheet.dataset.image);
+          const image = await loadPhoto(sheet.dataset.image, note.images.reference.sheet);
           if (request !== photoRequest) return;
           setPhotoStatus("");
           openViewer(image, "referenceSheet");

@@ -1,50 +1,54 @@
-name: Preparar la referencia ilustrada del billete mexicano
+name: Confirmar las imágenes publicadas del Atlas
 on:
   push:
     branches: [atlas-revision-imagenes]
 permissions:
   contents: read
 jobs:
-  muestras:
+  imagenes:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 3
     steps:
-      - name: Preparar ambas caras a partir de la lámina oficial
+      - name: Cotejar las imágenes publicadas con los archivos revisados
         run: |
-          python3 -m pip install --quiet Pillow pymupdf
           python3 - <<'PY'
-          import base64, fitz, hashlib, io, json, urllib.request
-          from PIL import Image
+          import hashlib, re, urllib.request
+          from concurrent.futures import ThreadPoolExecutor
+          from time import sleep
           
-          def emit(key, image):
-              output = io.BytesIO()
-              image.convert("RGB").save(output, "JPEG", quality=87, optimize=True)
-              raw = output.getvalue()
-              print("MX_IMAGE",json.dumps({"name":key,"width":image.width,"height":image.height,"sha256":hashlib.sha256(raw).hexdigest()}))
-              value = base64.b64encode(raw).decode("ascii")
-              for start in range(0, len(value), 5000):
-                  print("MX_BYTES", key, value[start:start+5000])
-          
-          with urllib.request.urlopen("https://www.banxico.org.mx/billetes-y-monedas/d/%7BAC94B18D-4090-5D45-37E4-FF7AF63AFAEF%7D.pdf", timeout=25) as response:
-              document = fitz.open(stream=response.read(), filetype="pdf")
-          page = document[0]
-          boxes = {
-              "front": (36, 243, 315, 394),
-              "back": (373, 235, 513, 490),
+          base = "https://miguel9925m-ux.github.io/catalogo-billetes/piloto/"
+          expected = {
+              "bil-053-anverso.jpg": "bb4bc1ae2344bf89aba9f9d370977de85419bf1b",
+              "bil-053-reverso.jpg": "c14a2c14970ff6c20edb8fadb5e5aea28689c3bf",
+              "bil-001-guia-banxico-anverso.jpg": "640ad24a385574979826b42051536ab2ce2cab0f",
+              "bil-001-guia-banxico-reverso.jpg": "b83d19956dbbdd8c2286f8c75e9753e3366fdf2d",
           }
-          for side, edges in boxes.items():
-              box = fitz.Rect(*(edge / 0.9 for edge in edges))
-              scale = 1300 / max(box.width, box.height)
-              crop = page.get_pixmap(matrix=fitz.Matrix(scale,scale), clip=box, alpha=False)
-              emit(side, Image.open(io.BytesIO(crop.tobytes("png"))))
           
-          with urllib.request.urlopen("https://museobancodemexico.mx/documentos/cedulario-esp_fam_billetes.pdf", timeout=18) as response:
-              museum = fitz.open(stream=response.read(), filetype="pdf")
-          for p in museum:
-              excerpt = " ".join(p.get_text().split()).lower()
-              if ("cocodrilo" in excerpt and ("trigarante" in excerpt or "garza" in excerpt)) or "reverso del billete de 20" in excerpt:
-                  print("MX_MUSEO", p.number+1, excerpt[:160])
-                  if len(p.get_image_info()) < 12:
-                      pix = p.get_pixmap(matrix=fitz.Matrix(0.65,0.65), alpha=False)
-                      emit("museo" + str(p.number+1), Image.open(io.BytesIO(pix.tobytes("png"))))
+          def read(path):
+              for attempt in range(3):
+                  try:
+                      req = urllib.request.Request(base + path, headers={"Cache-Control":"no-cache"})
+                      with urllib.request.urlopen(req, timeout=8) as response:
+                          return response.read()
+                  except OSError:
+                      if attempt == 2:
+                          raise
+                      sleep(2)
+          
+          def compare(filename):
+              raw = read("assets/" + filename)
+              assert raw.startswith(bytes.fromhex("ffd8")) and raw.endswith(bytes.fromhex("ffd9")), filename
+              recorded = hashlib.sha1(f"blob {len(raw)}".encode()+bytes(1)+raw).hexdigest()
+              assert recorded == expected[filename], (filename, recorded)
+              print("MX_JPEG_LIVE",filename,"ok",len(raw))
+          
+          with ThreadPoolExecutor(max_workers=4) as pool:
+              list(pool.map(compare, expected))
+          page = read("billetes/bil-001/index.html?lang=es").decode()
+          assert "Guía ilustrada del Banco de México" in page
+          assert "garza chocolatera" in page
+          for name in expected:
+              if name.startswith("bil-001"):
+                  assert re.search(r'data-reference="[^"]*'+re.escape(name)+r'"', page), name
+          print("MX_PUBLISHED_MATCH BIL-001 and the four image bytes")
           PY

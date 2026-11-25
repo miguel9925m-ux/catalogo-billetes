@@ -149,7 +149,7 @@
     window.scrollTo(0, 0);
   }
 
-  function fitPhoto(frame, image, definition) {
+  function fitPhoto(frame, image, definition, landscape = false) {
     const { width, height, outline } = definition;
     const xs = outline?.map(([x]) => x) ?? [0, width];
     const ys = outline?.map(([, y]) => y) ?? [0, height];
@@ -157,13 +157,19 @@
     const top = Math.min(...ys);
     const croppedWidth = Math.max(...xs) - left;
     const croppedHeight = Math.max(...ys) - top;
+    const rotated = landscape && croppedHeight > croppedWidth;
+    const frameWidth = rotated ? croppedHeight : croppedWidth;
+    const frameHeight = rotated ? croppedWidth : croppedHeight;
+    // With a clockwise turn, the bottom-left of the crop becomes the top-left of the frame.
+    const [x, y] = rotated ? [top + croppedHeight, -left] : [-left, -top];
 
-    frame.style.aspectRatio = croppedWidth + " / " + croppedHeight;
+    frame.style.aspectRatio = frameWidth + " / " + frameHeight;
     image.width = width;
     image.height = height;
-    image.style.width = (width / croppedWidth * 100) + "%";
-    image.style.left = (-left / croppedWidth * 100) + "%";
-    image.style.top = (-top / croppedHeight * 100) + "%";
+    image.style.width = (width / frameWidth * 100) + "%";
+    image.style.left = (x / frameWidth * 100) + "%";
+    image.style.top = (y / frameHeight * 100) + "%";
+    image.style.transform = rotated ? "rotate(90deg)" : "none";
     image.style.clipPath = outline
       ? "polygon(" + outline.map(([x, y]) => (x / width * 100) + "% " + (y / height * 100) + "%").join(", ") + ")"
       : "none";
@@ -183,7 +189,7 @@
     photo.active = definition;
     photo.kind.hidden = !showKind;
     labelPhoto(photo);
-    fitPhoto(photo.frame, photo.image, definition);
+    fitPhoto(photo.frame, photo.image, definition, true);
     photo.frame.querySelector(".specimen-mark").hidden = !definition.specimen;
     if (photo.image.src !== definition.src) photo.image.src = definition.src;
   }
@@ -554,7 +560,7 @@
     button.addEventListener("click", () => setLanguage(button.dataset.language, true));
   }
   for (const frame of document.querySelectorAll("[data-home-photo]")) {
-    fitPhoto(frame, frame.querySelector("img"), atlasNotes[frame.dataset.homePhoto].images.original.front);
+    fitPhoto(frame, frame.querySelector("img"), atlasNotes[frame.dataset.homePhoto].images.original.front, true);
   }
 
   if (note) {

@@ -3,6 +3,7 @@
   --ink: #182b25;
   --deep: #15372e;
   --paper: #f8f8f1;
+  --page-background: #e5e4cf;
   --soft: #edf1e7;
   --green: #265b45;
   --muted: #4e6258;
@@ -11,7 +12,7 @@
   --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink); font: 1rem/1.6 var(--sans); }
+body { margin: 0; background: var(--page-background); color: var(--ink); font: 1rem/1.6 var(--sans); }
 img { display: block; max-width: 100%; height: auto; }
 button, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -94,7 +95,10 @@ h1 { margin: 0; font-size: clamp(2.45rem, 6vw, 4.65rem); line-height: .99; lette
 .face-photo-kind { font-size: .8125rem; color: var(--muted); }
 .face-photo-kind:not([hidden]) { display: block; }
 .photo-window { display: block; position: relative; width: 100%; aspect-ratio: 2 / 1; overflow: hidden; }
-.photo-window img { position: absolute; width: 100%; height: auto; max-width: none; left: 0; top: 0; }
+.photo-window img {
+  position: absolute; width: 100%; height: auto; max-width: none; left: 0; top: 0;
+  transform-origin: top left;
+}
 .specimen-mark {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%) rotate(-17deg);

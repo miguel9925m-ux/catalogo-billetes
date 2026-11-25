@@ -109,12 +109,23 @@ async function enter(page, url, title) {
   assert.equal(response.status(), 200, url);
   await heading(page, title);
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  assert.equal(await page.locator("body").evaluate(el => getComputedStyle(el).backgroundColor), "rgb(229, 228, 207)");
+}
+
+async function checkHorizontalFrames(frames, label) {
+  const sizes = await frames.evaluateAll(elements => elements.map(element => {
+    const { width, height } = element.getBoundingClientRect();
+    return { width, height };
+  }));
+  assert.ok(sizes.length > 0 && sizes.every(({width,height}) => height > 0 && width + 1 >= height),
+    label + " should display horizontal photo frames");
 }
 
 async function checkCatalogue(page) {
   await enter(page, base + "?lang=es", "Catálogo de billetes");
   const filter = page.getByRole("combobox", { name: "País o región", exact: true });
   assert.equal(await page.locator(".preview-entry:visible").count(), 77);
+  await checkHorizontalFrames(page.locator(".preview-entry:visible .photo-window"), "Catalogue");
   assert.equal(await page.locator("#catalogue-count").textContent(), "77 billetes");
   await filter.selectOption("MLT");
   assert.equal(await page.locator(".preview-entry:visible").count(), 1);
@@ -261,6 +272,7 @@ async function checkReference(page, profile) {
       }
     }
     assert.equal(new Set(signatures).size, signatures.length, "The same image was used for both faces");
+    await checkHorizontalFrames(page.locator(".gallery .photo-window"), profile.id + " samples");
     await page.locator("[data-photo-mode=original]").click();
     assert.equal(await referenceButton.getAttribute("aria-pressed"), "false", profile.id);
     return signatures.length;
@@ -276,10 +288,16 @@ async function checkExamples(page) {
   const ref = page.getByRole("button", { name: "Muestra didáctica", exact: true });
   await ref.click();
   await page.waitForFunction(() => document.querySelector("[data-photo-mode=reference]").getAttribute("aria-pressed") === "true");
+  assert.equal(await page.locator('[data-photo="back"] img').evaluate(img => img.style.transform), "rotate(90deg)");
   await page.getByRole("button", { name: "Ampliar reverso", exact: true }).click();
   const enlarged = page.locator("#viewer-photo");
   await enlarged.evaluate(image => image.decode());
   assert.equal(await enlarged.getAttribute("src"), referenceURL(profile.images.reference.back));
+  assert.equal(await enlarged.evaluate(img => img.style.transform), "none");
+  assert.ok(await page.locator("#viewer-frame").evaluate(el => {
+    const {width, height} = el.getBoundingClientRect();
+    return height > width;
+  }));
   await page.getByRole("button", { name: "Ampliar foto", exact: true }).click();
   assert.equal(await page.locator("#zoom-value").textContent(), "150%");
   await page.getByRole("button", { name: "Cerrar foto", exact: true }).click();
@@ -303,6 +321,10 @@ async function checkExamples(page) {
   } finally {
     await page.unroute(matchesSample);
   }
+
+  await enter(page, base + "billetes/bil-055/?lang=es", "5 rublos bielorrusos");
+  const belarus = await page.evaluate(() => window.atlasNotes["BIL-055"]);
+  assert.equal(await checkReference(page, belarus), 2, "Both Belarus specimen faces must open");
 
   await enter(page, base + "billetes/bil-007/?lang=es", "50 dinares serbios");
   await page.getByRole("button", { name: "Ubicar Serbia", exact: true }).click();
@@ -363,6 +385,7 @@ async function checkEntireCollection(context, rates) {
             await heading(page, profile.copy.es.noteTitle);
             assert.equal(await page.locator(".serial").textContent(), profile.serial, id);
             assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), id + " horizontal overflow");
+            await checkHorizontalFrames(page.locator(".gallery .photo-window"), id + " collection photos");
             const photos = await page.locator(".gallery img").evaluateAll(async images => {
               return Promise.all(images.map(async image => {
                 await image.decode();

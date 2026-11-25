@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#15372e">
   <title>5 rublos bielorrusos · Atlas de Billetes</title>
-  <link rel="stylesheet" href="../../assets/atlas.css?v=af8c373dc157">
+  <link rel="stylesheet" href="../../assets/atlas.css?v=2ca8a6cbdb2d">
 </head>
 <body data-page="note" data-note-id="BIL-055" data-rate-url="https://raw.githubusercontent.com/miguel9925m-ux/catalogo-billetes/main/piloto/assets/exchange-rates.json" id="inicio">
   <a class="skip-link" href="#ficha" data-copy="skip">Saltar al contenido</a>
@@ -44,14 +44,23 @@
         </button>
       </header>
 
-      
+      <div class="photo-controls">
+        <div class="view-switch" role="group" aria-label="Tipo de imagen" data-label="photoType">
+          <button type="button" data-photo-mode="original" aria-pressed="true" data-copy="collectionPhoto">Ejemplar de la colección</button>
+          <button type="button" data-photo-mode="reference" aria-pressed="false" data-copy="referencePhoto">Muestra didáctica</button>
+        </div>
+        <p id="photo-status" role="status" hidden></p>
+        <p id="reference-credit" hidden>
+          <a href="https://static.nbp.pl/publikacje/album-walut/bialorus-druk.pdf#page=7" target="_blank" rel="noopener noreferrer" data-copy="referenceCredit">Fuente de la muestra</a>
+        </p>
+      </div>
 
       <div class="gallery">
         <figure>
           <button class="photo-button" type="button" data-photo="front" aria-haspopup="dialog"
             aria-label="Ampliar anverso" data-label="zoomFront">
             <span class="photo-window">
-              <img src="../../assets/bil-055-anverso.jpg" width="1050" height="788"
+              <img src="../../assets/bil-055-anverso.jpg" data-reference="../../assets/bil-055-muestra-anverso.jpg" width="1050" height="788"
                 alt="Torre de Kamianets y detalle de un arco de ladrillo." data-alt="frontAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
@@ -67,7 +76,7 @@
           <button class="photo-button" type="button" data-photo="back" aria-haspopup="dialog"
             aria-label="Ampliar reverso" data-label="zoomBack">
             <span class="photo-window">
-              <img src="../../assets/bil-055-reverso.jpg" width="1050" height="788"
+              <img src="../../assets/bil-055-reverso.jpg" data-reference="../../assets/bil-055-muestra-reverso.jpg" width="1050" height="788"
                 alt="Rueda y construcciones de madera en un collage de los primeros asentamientos eslavos." data-alt="backAlt" referrerpolicy="no-referrer">
               <span class="specimen-mark" aria-hidden="true" hidden>SPECIMEN</span>
             </span>
@@ -134,7 +143,8 @@
         <section class="references" aria-labelledby="references-title">
           <h2 id="references-title" data-copy="sources">Fuentes</h2>
           <ul>
-            <li><a href="https://www.cashcirculation.ru/bsm_articles/обновленные-банкноты-республики-бел/" target="_blank" rel="noopener noreferrer" data-copy="source1">cashcirculation.ru</a></li>
+            <li><a href="https://static.nbp.pl/publikacje/album-walut/bialorus-druk.pdf#page=7" target="_blank" rel="noopener noreferrer" data-copy="source1">Banco Nacional de Polonia · lámina B/2 de los 5 rublos de 2019</a></li>
+            <li><a href="https://www.cashcirculation.ru/bsm_articles/обновленные-банкноты-республики-бел/" target="_blank" rel="noopener noreferrer" data-copy="source2">cashcirculation.ru</a></li>
           </ul>
           <p class="photo-credit" data-copy="photosSource">Fotografías del ejemplar de Atlas de Billetes.</p>
         </section>
@@ -182,8 +192,8 @@
       </div>
     </div>
   </dialog>
-  <script defer src="../../assets/pilot-data.js?v=52093f5278a3"></script>
+  <script defer src="../../assets/pilot-data.js?v=d1156d204d0b"></script>
   <script defer src="../../assets/map-data.js?v=c74aa79cd573"></script>
-  <script defer src="../../assets/atlas.js?v=81277393b927"></script>
+  <script defer src="../../assets/atlas.js?v=6b6290e6a180"></script>
 </body>
 </html>

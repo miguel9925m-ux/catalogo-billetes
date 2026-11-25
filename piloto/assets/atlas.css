@@ -10,9 +10,10 @@
   --line: #cdd8cc;
   --serif: Georgia, "Times New Roman", serif;
   --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--page-background);
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--page-background); color: var(--ink); font: 1rem/1.6 var(--sans); }
+body { margin: 0; color: var(--ink); font: 1rem/1.6 var(--sans); }
 img { display: block; max-width: 100%; height: auto; }
 button, select { font: inherit; color: inherit; }
 button { cursor: pointer; }

@@ -109,7 +109,8 @@ async function enter(page, url, title) {
   assert.equal(response.status(), 200, url);
   await heading(page, title);
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  assert.equal(await page.locator("body").evaluate(el => getComputedStyle(el).backgroundColor), "rgb(229, 228, 207)");
+  const background = await page.locator("html").evaluate(el => getComputedStyle(el).backgroundColor);
+  assert.equal(background, "rgb(229, 228, 207)", url + " should have the selected page background");
 }
 
 async function checkHorizontalFrames(frames, label) {

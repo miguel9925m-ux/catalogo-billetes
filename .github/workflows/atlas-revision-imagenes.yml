@@ -34,7 +34,7 @@ jobs:
                   with urllib.request.urlopen(url, timeout=24) as fetched:
                       raw=fetched.read()
                   document=fitz.open(stream=raw,filetype="pdf")
-                  page=document[5]
+                  page=next(p for p in document if 'B/2' in p.get_text() and '5 rubli' in p.get_text() and len(p.get_image_info())>=2)
                   raster=page.get_pixmap(matrix=fitz.Matrix(1.3,1.3),alpha=False)
                   print('BIL055_PAGE', name, page.number+1, page.rect, repr(page.get_text()[:300]))
                   emit(name+'-page',raster)
@@ -43,7 +43,7 @@ jobs:
                       box=fitz.Rect(info["bbox"])
                       print("BIL055_BOX",name, list(box),info["width"],info["height"])
                       if box.get_area()>3500 and 1.65 < box.width/box.height < 2.15:
-                          if not any(box.intersect(prior).get_area()>box.get_area()*.7 for prior in found):
+                          if not any((box & prior).get_area()>box.get_area()*.7 for prior in found):
                               found.append(box)
                   found=sorted(sorted(found,key=lambda x:x.get_area(),reverse=True)[:2],key=lambda x:x.y0)
                   if len(found)==2:

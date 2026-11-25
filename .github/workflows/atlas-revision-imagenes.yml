@@ -1,4 +1,4 @@
-name: Revisar las láminas de los 20 pesos mexicanos
+name: Preparar la referencia ilustrada del billete mexicano
 on:
   push:
     branches: [atlas-revision-imagenes]
@@ -9,39 +9,42 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Revisar las páginas publicadas por el Banco de México
+      - name: Preparar ambas caras a partir de la lámina oficial
         run: |
           python3 -m pip install --quiet Pillow pymupdf
           python3 - <<'PY'
-          import base64, fitz, io, json, urllib.request
+          import base64, fitz, hashlib, io, json, urllib.request
           from PIL import Image
           
-          sources = {"cart":"https://www.banxico.org.mx/billetes-y-monedas/d/%7BAC94B18D-4090-5D45-37E4-FF7AF63AFAEF%7D.pdf","press":"https://www.banxico.org.mx/publicaciones-y-prensa/relacionados-con-billetes/%7BF0CA9A17-1A1E-DA25-EAF3-9514F12EF05E%7D.pdf","award":"https://www.banxico.org.mx/billetes-y-monedas/d/%7BC416053A-ED52-FBBD-AA26-9A7B75AC600F%7D.pdf","rule":"https://www.banxico.org.mx/marco-normativo/normativa-emitida-por-el-banco-de-mexico/circular-operaciones-de-caja-1-de-octubre-de-2009/%7BF3081819-D4AB-EC80-3B75-F154F96F8CBA%7D.pdf"}
-          pages = {"cart":[0], "press":[1,2], "award":[1], "rule":[1,2]}
-          
-          def preview(name, page):
-              factor = min(0.9, 810 / max(page.rect.width, page.rect.height))
-              pix = page.get_pixmap(matrix=fitz.Matrix(factor,factor), alpha=False)
-              image = Image.open(io.BytesIO(pix.tobytes("png")))
+          def emit(key, image):
               output = io.BytesIO()
-              image.save(output, "JPEG", quality=83, optimize=True)
-              value = base64.b64encode(output.getvalue()).decode("ascii")
-              for start in range(0, len(value), 5100):
-                  print("MX_PREVIEW", name, value[start:start+5100])
+              image.convert("RGB").save(output, "JPEG", quality=87, optimize=True)
+              raw = output.getvalue()
+              print("MX_IMAGE",json.dumps({"name":key,"width":image.width,"height":image.height,"sha256":hashlib.sha256(raw).hexdigest()}))
+              value = base64.b64encode(raw).decode("ascii")
+              for start in range(0, len(value), 5000):
+                  print("MX_BYTES", key, value[start:start+5000])
           
-          for key, url in sources.items():
-              try:
-                  with urllib.request.urlopen(url, timeout=18) as response:
-                      raw = response.read()
-                  doc = fitz.open(stream=raw, filetype="pdf")
-                  print("MX_DOC", key, len(raw), len(doc))
-                  for p in pages[key]:
-                      page = doc[p]
-                      print("MX_BOXES", key + str(p + 1), json.dumps([{
-                          "box":[round(x,2) for x in info["bbox"]],
-                          "width": info["width"],"height":info["height"],"xref":info["xref"]
-                      } for info in page.get_image_info(xrefs=True)]))
-                      preview(key + str(p+1), page)
-              except Exception as error:
-                  print("MX_SOURCE_ERROR", key, repr(error))
+          with urllib.request.urlopen("https://www.banxico.org.mx/billetes-y-monedas/d/%7BAC94B18D-4090-5D45-37E4-FF7AF63AFAEF%7D.pdf", timeout=25) as response:
+              document = fitz.open(stream=response.read(), filetype="pdf")
+          page = document[0]
+          boxes = {
+              "front": (36, 243, 315, 394),
+              "back": (373, 235, 513, 490),
+          }
+          for side, edges in boxes.items():
+              box = fitz.Rect(*(edge / 0.9 for edge in edges))
+              scale = 1300 / max(box.width, box.height)
+              crop = page.get_pixmap(matrix=fitz.Matrix(scale,scale), clip=box, alpha=False)
+              emit(side, Image.open(io.BytesIO(crop.tobytes("png"))))
+          
+          with urllib.request.urlopen("https://museobancodemexico.mx/documentos/cedulario-esp_fam_billetes.pdf", timeout=18) as response:
+              museum = fitz.open(stream=response.read(), filetype="pdf")
+          for p in museum:
+              excerpt = " ".join(p.get_text().split()).lower()
+              if ("cocodrilo" in excerpt and ("trigarante" in excerpt or "garza" in excerpt)) or "reverso del billete de 20" in excerpt:
+                  print("MX_MUSEO", p.number+1, excerpt[:160])
+                  if len(p.get_image_info()) < 12:
+                      pix = p.get_pixmap(matrix=fitz.Matrix(0.65,0.65), alpha=False)
+                      emit("museo" + str(p.number+1), Image.open(io.BytesIO(pix.tobytes("png"))))
           PY

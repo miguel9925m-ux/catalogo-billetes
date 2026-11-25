@@ -1,38 +1,55 @@
-name: Verificar las fotografías licenciadas del Caribe Oriental
+name: Verificar las imágenes de 5 rublos bielorrusos
 on:
   push:
     branches: [atlas-revision-imagenes]
 permissions:
   contents: read
 jobs:
-  muestras:
+  muestra:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 5
     steps:
-      - name: Verificar frente y reverso publicados por su fotógrafo
+      - name: Extraer las dos caras de la lámina del Banco Nacional de Polonia
         run: |
-          python3 -m pip install --quiet Pillow
+          python3 -m pip install --quiet Pillow pymupdf
           python3 - <<'PY'
           import base64, hashlib, json, urllib.request
           from io import BytesIO
+          import fitz
           from PIL import Image
-          sources = {
-              "front":"https://en.numista.com/catalogue/photos/oeco/660bb7a46367d1.31662060-original.jpg",
-              "back":"https://en.numista.com/catalogue/photos/oeco/660bb7a7238d00.45183771-original.jpg",
-          }
-          for side,url in sources.items():
-              request=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'image/jpeg,image/*;q=0.8'})
-              with urllib.request.urlopen(request,timeout=20) as response:
-                  raw=response.read()
-              with Image.open(BytesIO(raw)) as photo:
-                  assert photo.format == 'JPEG'
-                  photo.thumbnail((720, 1400), Image.Resampling.LANCZOS)
-                  width,height=photo.size
-                  buffer=BytesIO()
-                  photo.convert('RGB').save(buffer,'JPEG',quality=88,optimize=True)
-                  raw=buffer.getvalue()
-              print('APPROVED_FILE',json.dumps({'side':side,'width':width,'height':height,'sha256':hashlib.sha256(raw).hexdigest()}))
-              encoded=base64.b64encode(raw).decode('ascii')
-              for offset in range(0,len(encoded),5200):
-                  print('ATLAS_EXPORT','licensed-'+side,encoded[offset:offset+5200])
+
+          def emit(key,pix):
+              im=Image.open(BytesIO(pix.tobytes('png'))).convert("RGB")
+              output=BytesIO()
+              im.save(output,'JPEG',quality=88,optimize=True)
+              raw=output.getvalue()
+              print("BIL055_FILE",json.dumps({"key":key,"width":im.width,"height":im.height,"sha256":hashlib.sha256(raw).hexdigest()}))
+              value=base64.b64encode(raw).decode("ascii")
+              for at in range(0,len(value),5200):
+                  print("BIL055_EXPORT",key,value[at:at+5200])
+
+          for name in ('bialorus-druk.pdf','bialorus-www.pdf'):
+              try:
+                  url='https://static.nbp.pl/publikacje/album-walut/'+name
+                  with urllib.request.urlopen(url, timeout=24) as fetched:
+                      raw=fetched.read()
+                  document=fitz.open(stream=raw,filetype="pdf")
+                  page=document[5]
+                  raster=page.get_pixmap(matrix=fitz.Matrix(1.3,1.3),alpha=False)
+                  print('BIL055_PAGE', name, page.number+1, page.rect, repr(page.get_text()[:300]))
+                  emit(name+'-page',raster)
+                  found=[]
+                  for info in page.get_image_info(xrefs=True):
+                      box=fitz.Rect(info["bbox"])
+                      print("BIL055_BOX",name, list(box),info["width"],info["height"])
+                      if box.get_area()>3500 and 1.65 < box.width/box.height < 2.15:
+                          if not any(box.intersect(prior).get_area()>box.get_area()*.7 for prior in found):
+                              found.append(box)
+                  found=sorted(sorted(found,key=lambda x:x.get_area(),reverse=True)[:2],key=lambda x:x.y0)
+                  if len(found)==2:
+                      for side,box in zip(('front','back'),found):
+                          factor=1100/box.width
+                          emit(name+'-'+side,page.get_pixmap(matrix=fitz.Matrix(factor,factor),clip=box,alpha=False))
+              except Exception as error:
+                  print('BIL055_ERROR',name,error)
           PY

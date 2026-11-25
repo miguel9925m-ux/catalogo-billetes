@@ -25,11 +25,13 @@
   const photos = [...document.querySelectorAll("[data-photo]")].map(button => {
     const image = button.querySelector("img");
     const side = button.dataset.photo;
+    const figure = button.closest("figure");
     const original = { ...note.images.original[side], src: image.src };
     return {
       button, image, side, original, active: original,
       frame: button.querySelector(".photo-window"),
-      kind: button.closest("figure").querySelector(".face-photo-kind"),
+      kind: figure.querySelector(".face-photo-kind"),
+      caption: figure.querySelector(`[data-copy="${side}Caption"]`),
     };
   });
 
@@ -183,6 +185,10 @@
   function labelPhoto(photo) {
     photo.image.alt = photoAlt(photo);
     photo.kind.textContent = photo.active.reference ? words.referencePhoto : words.collectionPhoto;
+    const caption = words[photo.side + "Caption"];
+    photo.caption.textContent = photo.active.reference
+      ? words[photo.side + "ReferenceCaption"] ?? caption
+      : caption;
   }
 
   function displayPhoto(photo, definition, showKind) {
